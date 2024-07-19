@@ -1,0 +1,23 @@
+.icon{
+    position: relative;
+    width: 25px;
+    aspect-ratio: 1;
+}
+
+.icon:hover{
+    cursor: pointer;
+}
+
+.icon:active{
+    box-shadow: none;
+}
+
+.mobileOnly{
+    display: none;
+}
+
+@media (max-width: 800px){
+    .mobileOnly{
+        display: block;
+    }
+}

@@ -1,0 +1,33 @@
+.main {
+  padding: 6rem 4rem;
+  margin: auto;
+  width: 100%;
+  max-width: 1440px;
+  min-height: calc(100vh - 60px);
+}
+
+.main p{
+  text-align: center;
+}
+
+.form{
+  max-width: 600px;
+  padding: 20px;
+  margin: auto;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.link{
+  color: var(--nav-bg);
+}
+
+@media (max-width: 600px){
+  .main{
+    padding: 2rem 1rem;
+  }
+
+  .form h1{
+    font-size: 25px;
+  }
+}

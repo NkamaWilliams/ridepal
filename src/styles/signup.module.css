@@ -1,0 +1,34 @@
+.tagline{
+    text-align: center;
+    margin: auto;
+    align-items: center;
+}
+
+.choice{
+    display: flex;
+    justify-content: space-around;
+    max-width: 900px;
+    margin: 50px auto;
+}
+
+.choice div{
+    width: 45%;
+    max-width: 400px;
+}
+
+.group{
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.member{
+    flex: 1;
+}
+
+@media (max-width: 550px){
+    .group{
+        flex-direction: column;
+        gap: 0;
+    }
+}

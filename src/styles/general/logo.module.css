@@ -1,0 +1,12 @@
+.logo{
+    font-size: 25px;
+    color: purple;
+}
+
+.logo span{
+    color: blue;
+}
+
+.inheritFont{
+    font-size: inherit;
+}

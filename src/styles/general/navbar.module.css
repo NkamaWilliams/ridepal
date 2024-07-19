@@ -1,0 +1,100 @@
+.nav{
+    padding: 10px 20px;
+    margin: auto;
+    width: 100%;
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: var(--nav-bg);
+}
+
+.menuIcon{
+    background-color: transparent;
+    border: none;
+}
+
+.highlight{
+    margin: auto;
+    width: 0;
+    height: 2px;
+    background-color: black;
+    transition: width 0.5s ease;
+}
+
+.link, .sidelink{
+    display: block;
+}
+
+.link:hover .highlight, .sidelink:hover .highlight{    
+    width: 100%;
+}
+
+.menu{
+    display: flex;
+    gap: 30px;
+    margin-left: auto;
+}
+
+.menu, .sidenav{
+    font-size: 19px;
+}
+
+.sidenav{
+    position: fixed;
+    top: 0;
+    left: -310px;
+    width: 300px;
+    height: 100vh;
+    background-color: white;
+    box-shadow: 2px 0 10px rgb(184, 184, 184);
+    transition: left 0.3s ease;
+}
+
+.sidenav header{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 20px;
+    height: var(--nav-height);
+    background-color: var(--nav-bg);
+    margin-bottom: 20px;
+}
+
+.sidenav .link:hover .highlight{
+    width: 0;
+}
+
+.sidelinkContainer{
+    padding: 10px 20px;
+}
+
+.sidelinkContainer h3{
+    margin: 15px 0;
+}
+
+.sidelink{
+    height: 50px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.open{
+    left: 0;
+}
+
+@media (max-width: 600px){
+    .nav, .sidenav header{
+        height: var(--nav-height-mobile);
+    }
+
+    .menu{
+        gap: 10px;
+    }
+
+    .menu, .sidenav{
+        font-size: 16px;
+    }
+}

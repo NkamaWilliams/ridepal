@@ -1,0 +1,22 @@
+.inputGroup{
+    width: 100%;
+    max-width: 800px;
+    margin: 20px 0;
+}
+
+.inputGroup label{
+    display: block;
+    color: var(--input-label);
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.inputGroup input{
+    width: calc(100% - 10px);
+    height: 40px;
+    margin: 0 5px;
+    padding: 5px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid var(--input-label);
+}
