@@ -1,23 +1,46 @@
+'use client'
 import TextInput from "@/components/form/text-input";
+import FileInput from "@/components/form/file-input";
 import Button from "@/components/general/button";
+import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
 import styles2 from "@/styles/signup.module.css"
 import Link from "next/link";
+import { FormEvent } from "react";
 
 export default function Home() {
+    const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try{
+            const data = new FormData(e.currentTarget);
+            const requestOptions = {
+                method: 'POST',
+                body: data,
+            };
+            let response = await fetch(`${endpoint[0]}driver/signup/`, requestOptions);
+            console.log(response.status)
+            console.log(await response.text())
+            if (response.status == 400){
+                console.log("Bad request!");
+            }
+        } catch(err){
+            console.log(err)
+        }
+    }
   return (
     <main className={styles.main}>
-      <form className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <h1>Create a driver&apos;s account</h1>
         <br/>
         <p><b>Personal Information</b></p>
         <div className={styles2.group}>
             <div className={styles2.member}>
-                <TextInput label="First Name" type="text" name="firstname"/>
+                <TextInput label="First Name" type="text" name="firstName"/>
             </div>
 
             <div className={styles2.member}>
-                <TextInput label="Last Name" type="text" name="lastname"/>
+                <TextInput label="Last Name" type="text" name="lastName"/>
             </div>
         </div>
 
@@ -39,21 +62,21 @@ export default function Home() {
             </div>
 
             <div className={styles2.member}>
-                <TextInput label="Company Name" type="text" name="company"/>
+                <TextInput label="Company Name" type="text" name="companyName"/>
             </div>
         </div>
 
         <div className={styles2.group}>
             <div className={styles2.member}>
-                <TextInput label="Work Email" type="email" name="workemail"/>
+                <TextInput label="Work Email" type="email" name="workEmail"/>
             </div>
 
             <div className={styles2.member}>
-                <TextInput label="Work ID" type="text" name="id"/>
+                <FileInput label="Work ID" name="workID"/>
             </div>
         </div>
 
-        <TextInput label="Work Address" type="text" name="address" />
+        <TextInput label="Work Address" type="text" name="workAddress" />
 
         <p><b>Car Details</b></p>
         
@@ -69,14 +92,14 @@ export default function Home() {
 
         <div className={styles2.group}>
             <div className={styles2.member}>
-                <TextInput label="Plate Number" type="text" name="platenum"/>
+                <TextInput label="Plate Number" type="text" name="plateNumber"/>
             </div>
 
             <div className={styles2.member}>
-                <TextInput label="Number of Seats" type="text" name="seats"/>
+                <TextInput label="Number of Seats" type="text" name="seatNumber"/>
             </div>
         </div>
-
+{/* 
         <div className={styles2.group}>
             <div className={styles2.member}>
                 <TextInput label="ID" type="text" name="id"/>
@@ -85,7 +108,7 @@ export default function Home() {
             <div className={styles2.member}>
                 <TextInput label="Owner ID" type="text" name="ownerid"/>
             </div>
-        </div>
+        </div> */}
 
         <Button text="Create Account"/>
 
