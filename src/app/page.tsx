@@ -1,21 +1,26 @@
 'use client'
 import TextInput from "@/components/form/text-input";
 import Button from "@/components/general/button";
+import Loading from "@/components/general/loading";
+import { useAppContext } from "@/components/general/appcontext";
 import Link from "next/link";
 import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
 import { FormEvent } from "react";
+import { useState } from "react";
 
 export default function Home() {
+  const context = useAppContext()
+  const [loading, setLoading] = useState<boolean>(false)
+
   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
     const entries = Object.fromEntries(new FormData(e.currentTarget).entries())
     const raw = {
       "email": entries["email"].toString(),
       "password": entries["password"].toString(),
     }
-    console.log("RAW:")
-    console.log(raw)
     try{
       var requestOptions = {
         method: 'POST',
@@ -26,15 +31,25 @@ export default function Home() {
       }
 
       const response = await fetch(`${endpoint[0]}auth/signin`, requestOptions)
-      console.log(await response.text())
-      alert("SUCCESS!")
+
+      if (response.status == 200){
+        const result = await response.json()
+        const data = result.data
+        context.setContext(data.user.id, data.user.email, data.user.username, data.accessToken)
+        sessionStorage.setItem("id", data.user.id);
+        sessionStorage.setItem("token", data.accessToken);
+      }
     } catch(err){
       console.log(err)
+    } finally{
+      setLoading(false)
     }
   }
 
   return (
     <main className={styles.main}>
+      {loading && <Loading />}
+      {/* <Alert type={2} message="Failure is you, and so is me!"/> */}
       <form onSubmit={handleSubmit} className={styles.form}>
         <h1>Login</h1>
         <TextInput label="Email" type="email" name="email"/>

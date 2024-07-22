@@ -2,16 +2,23 @@
 import TextInput from "@/components/form/text-input";
 import FileInput from "@/components/form/file-input";
 import Button from "@/components/general/button";
+import Loading from "@/components/general/loading";
+import Alert from "@/components/general/alert";
 import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
 import styles2 from "@/styles/signup.module.css"
-import Link from "next/link";
+import { useState } from "react";
 import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+    const route = useRouter();
+    const [loading, setLoading] = useState<boolean>(false)
+    const [hidealert, setAlert] = useState<boolean>(true)
+
     const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        setLoading(true)
         try{
             const data = new FormData(e.currentTarget);
             const requestOptions = {
@@ -24,12 +31,23 @@ export default function Home() {
             if (response.status == 400){
                 console.log("Bad request!");
             }
+            if (response.status == 201){
+                setAlert(false)
+                setTimeout(() => {setAlert(true)}, 3500)
+            }
         } catch(err){
             console.log(err)
+        } finally{
+            setLoading(false)
+            setTimeout(() => {}, 3500)
+            // route.push("/")
         }
     }
+
   return (
     <main className={styles.main}>
+      {loading && <Loading />}
+      <Alert type={1} message="Please wait for verification mail before attempting to login!" hide={hidealert}/>
       <form onSubmit={handleSubmit} className={styles.form}>
         <h1>Create a driver&apos;s account</h1>
         <br/>
@@ -99,16 +117,6 @@ export default function Home() {
                 <TextInput label="Number of Seats" type="text" name="seatNumber"/>
             </div>
         </div>
-{/* 
-        <div className={styles2.group}>
-            <div className={styles2.member}>
-                <TextInput label="ID" type="text" name="id"/>
-            </div>
-
-            <div className={styles2.member}>
-                <TextInput label="Owner ID" type="text" name="ownerid"/>
-            </div>
-        </div> */}
 
         <Button text="Create Account"/>
 

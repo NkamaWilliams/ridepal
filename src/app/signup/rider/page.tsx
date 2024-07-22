@@ -3,35 +3,50 @@ import TextInput from "@/components/form/text-input";
 import FileInput from "@/components/form/file-input";
 import endpoint from "@/resources/api-endpoint.json"
 import Button from "@/components/general/button";
+import Loading from "@/components/general/loading";
+import Alert from "@/components/general/alert";
 import styles from "@/styles/page.module.css";
 import styles2 from "@/styles/signup.module.css"
-import Link from "next/link";
+import { useState } from "react";
 import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+    const route = useRouter();
+    const [loading, setLoading] = useState<boolean>(false)
+    const [hidealert, setAlert] = useState<boolean>(true)
+
     const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        setLoading(true)
         try{
             const data = new FormData(e.currentTarget);
             const requestOptions = {
                 method: 'POST',
                 body: data,
             };
-            let response = await fetch(`${endpoint[0]}passenger/signup/`, requestOptions);
+            let response = await fetch(`${endpoint[0]}driver/signup/`, requestOptions);
             console.log(response.status)
-            console.log(response.text)
+            console.log(await response.text())
             if (response.status == 400){
                 console.log("Bad request!");
             }
+            if (response.status == 201){
+                setAlert(false)
+            }
         } catch(err){
             console.log(err)
+        } finally{
+            setLoading(false)
+            setTimeout(() => {setAlert(true)}, 3500)
+            // route.push("/")
         }
     }
 
   return (
     <main className={styles.main}>
-      
+      {loading && <Loading />}
+      <Alert type={1} message="Please wait for verification mail before attempting to login!" hide={hidealert}/>
       <form onSubmit={handleSubmit} className={styles.form}>
         <h1>Create a driver&apos;s account</h1>
         <br/>
