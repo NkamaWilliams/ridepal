@@ -1,0 +1,27 @@
+.main{
+    min-height: 100vh;
+    padding: 2rem 4rem;
+}
+
+.main h1{
+    margin: 20px 0;
+    text-align: center;
+}
+
+.main form{
+    margin: auto;
+    max-width: 600px;
+    padding: 15px;
+    border: 1px solid var(--input-label);
+    border-radius: 8px;
+}
+
+@media (max-width: 600px){
+    .main{
+        padding: 2rem 20px;
+    }
+
+    .main h1{
+        font-size: 25px;
+    }
+}

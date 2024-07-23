@@ -16,6 +16,10 @@
     display: none;
 }
 
+.small{
+    width: 15px;
+}
+
 @media (max-width: 800px){
     .mobileOnly{
         display: block;

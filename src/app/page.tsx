@@ -4,6 +4,7 @@ import Button from "@/components/general/button";
 import Loading from "@/components/general/loading";
 import { useAppContext } from "@/components/general/appcontext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
 import { FormEvent } from "react";
@@ -12,6 +13,7 @@ import { useState } from "react";
 export default function Home() {
   const context = useAppContext()
   const [loading, setLoading] = useState<boolean>(false)
+  const route = useRouter()
 
   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -36,13 +38,16 @@ export default function Home() {
         const result = await response.json()
         const data = result.data
         context.setContext(data.user.id, data.user.email, data.user.username, data.accessToken)
+        console.log("Context Set!")
         sessionStorage.setItem("id", data.user.id);
+        sessionStorage.setItem("username", data.user.username);
         sessionStorage.setItem("token", data.accessToken);
       }
     } catch(err){
       console.log(err)
     } finally{
       setLoading(false)
+      route.push("/dashboard/driver")
     }
   }
 
