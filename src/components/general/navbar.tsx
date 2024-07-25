@@ -53,12 +53,12 @@ export default function Navbar(){
                 <section className={styles.sidelinkContainer}>
                     <h3>Driver </h3>
                     <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/driver">
-                        <p>Dashboard</p>
+                        <p>Create Route</p>
                         <div className={styles.highlight}></div>
                     </Link>
 
                     <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/driver/routes">
-                        <p>Current Routes</p>
+                        <p>View Route</p>
                         <div className={styles.highlight}></div>
                     </Link>
 

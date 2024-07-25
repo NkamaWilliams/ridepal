@@ -4,6 +4,7 @@ import Button from "@/components/general/button";
 import Loading from "@/components/general/loading";
 import { useAppContext } from "@/components/general/appcontext";
 import Link from "next/link";
+import Alert from "@/components/general/alert";
 import { useRouter } from "next/navigation";
 import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
@@ -13,6 +14,7 @@ import { useState } from "react";
 export default function Home() {
   const context = useAppContext()
   const [loading, setLoading] = useState<boolean>(false)
+  const [hideAlert, setAlert] = useState<boolean>(true)
   const route = useRouter()
 
   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
@@ -45,16 +47,25 @@ export default function Home() {
       }
     } catch(err){
       console.log(err)
+      sessionStorage.setItem("id", "");
+      sessionStorage.setItem("username", "");
+      sessionStorage.setItem("token", "");
     } finally{
       setLoading(false)
-      route.push("/dashboard/driver")
+      if (sessionStorage.getItem("id") && sessionStorage.getItem("id") !+ ""){
+        route.push("/dashboard/driver")
+      }
+      else{
+        setAlert(false)
+        setTimeout(() => {setAlert(true)}, 3000)
+      }
     }
   }
 
   return (
     <main className={styles.main}>
       {loading && <Loading />}
-      {/* <Alert type={2} message="Failure is you, and so is me!"/> */}
+      <Alert type={2} message="Failure is you, and so is me! You sure your login is correct?" hide={hideAlert}/>
       <form onSubmit={handleSubmit} className={styles.form} method="post">
         <h1>Login</h1>
         <TextInput label="Email" type="email" name="email"/>
