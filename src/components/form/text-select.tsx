@@ -31,6 +31,7 @@ export default function TextSelect({label, type="text", name, required = true}:p
                 type={type}
                 name={name}
                 required={required}
+                autoComplete="off"
                 value={value}/>
             </div>
 
@@ -44,7 +45,7 @@ export default function TextSelect({label, type="text", name, required = true}:p
                     }}
                     key={member}>
                         <h4>Name of place</h4>
-                        <p>Random address of a place {member}</p>
+                        <p className={styles.address}>Random address of a place {member}</p>
                     </button>
                 )}
             </div>

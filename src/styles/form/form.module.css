@@ -23,6 +23,7 @@
     font-size: 18px;
     border-radius: 8px;
     border: 1px solid var(--input-label);
+    font-size: 16px;
 }
 
 .bold{
@@ -35,6 +36,27 @@
     background-size: 20px;
     background-position: 10px center;
     background-repeat: no-repeat;
+}
+
+.checkGroup{
+    padding: 10px 5px;
+    display: flex;
+    gap: 10px;
+}
+
+.checkGroup label{
+    width: 100%;
+    display: block;
+    font-size: 14px;
+    text-wrap: wrap;
+}
+
+.checkGroup label:hover{
+    cursor: pointer;
+}
+
+.address{
+    font-size: 16px;
 }
 
 .dropdownContent{

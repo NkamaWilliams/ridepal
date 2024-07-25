@@ -8,10 +8,13 @@ export default function DashboardLayout({children}: Readonly<{children:ReactNode
     const context = useAppContext()
     useEffect(
         () => {
-            if (context.accessToken == ""){
+            if(context.accessToken != ""){
+                return
+            }
+            else if (sessionStorage.getItem("token") == "" || sessionStorage.getItem("token") == null){
                 route.replace("/")
             }
-        }, []
+        }, [context, route]
     )
     return<>
         {children}

@@ -13,6 +13,10 @@ export default function Navbar(){
         setMenu(!menu);
     }
 
+    const closeSidenav = () => {
+        setMenu(false)
+    }
+
     return(
         <nav className={styles.nav}>
             <button title="menu" className={styles.menuIcon} onClick={handleMenu}>
@@ -48,13 +52,18 @@ export default function Navbar(){
 
                 <section className={styles.sidelinkContainer}>
                     <h3>Driver </h3>
-                    <Link className={styles.sidelink} href="/dashboard/driver">
+                    <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/driver">
                         <p>Dashboard</p>
                         <div className={styles.highlight}></div>
                     </Link>
 
+                    <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/driver/routes">
+                        <p>Current Routes</p>
+                        <div className={styles.highlight}></div>
+                    </Link>
+
                     <h3>Passenger </h3>
-                    <Link className={styles.sidelink} href="/">
+                    <Link onClick={closeSidenav} className={styles.sidelink} href="/">
                         <p>Dashboard</p>
                         <div className={styles.highlight}></div>
                     </Link>

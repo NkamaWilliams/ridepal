@@ -55,7 +55,7 @@ export default function Home() {
     <main className={styles.main}>
       {loading && <Loading />}
       {/* <Alert type={2} message="Failure is you, and so is me!"/> */}
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form} method="post">
         <h1>Login</h1>
         <TextInput label="Email" type="email" name="email"/>
         <TextInput label="Password" type="password" name="password"/>

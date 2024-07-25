@@ -15,3 +15,13 @@
     cursor: pointer;
     background-color: black;
 }
+
+.btn2{
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.btn2:hover{
+    color: white;
+}

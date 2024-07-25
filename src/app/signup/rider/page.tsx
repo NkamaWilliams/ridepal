@@ -47,7 +47,7 @@ export default function Home() {
     <main className={styles.main}>
       {loading && <Loading />}
       <Alert type={1} message="Please wait for verification mail before attempting to login!" hide={hidealert}/>
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form} method="post">
         <h1>Create a driver&apos;s account</h1>
         <br/>
         <p><b>Personal Information</b></p>
