@@ -1,5 +1,5 @@
 'use client'
-import styles from "@/styles/driver.module.css"
+import styles from "@/styles/dashboard.module.css"
 import { useAppContext } from "@/components/general/appcontext"
 import TextSelect from "@/components/form/text-select"
 import Checkbox from "@/components/form/checkbox"

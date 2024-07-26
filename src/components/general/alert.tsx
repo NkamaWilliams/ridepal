@@ -10,7 +10,7 @@ export default function Alert({type, message, hide=true}:props){
     return(
         <div className={`${styles.alert} ${(type==2) && styles.type2} ${!hide && styles.show}`}>
             <div>
-                <h2>{type == 1 ? "SUCCESS" : "FAILED"}</h2>
+                <h2>{type == 1 ? "SUCCESS!" : "FAILED!"}</h2>
                 <p>{message}</p>
             </div>
         </div>

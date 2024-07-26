@@ -1,5 +1,5 @@
 'use client'
-import styles from "@/styles/driver.module.css"
+import styles from "@/styles/dashboard.module.css"
 import Rate from "@/components/general/rate"
 import Button from "@/components/general/button"
 import { FormEvent, useState } from "react"

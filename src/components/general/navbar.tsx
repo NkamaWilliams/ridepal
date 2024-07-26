@@ -63,8 +63,8 @@ export default function Navbar(){
                     </Link>
 
                     <h3>Passenger </h3>
-                    <Link onClick={closeSidenav} className={styles.sidelink} href="/">
-                        <p>Dashboard</p>
+                    <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/rider">
+                        <p>Book ride</p>
                         <div className={styles.highlight}></div>
                     </Link>
                 </section>
