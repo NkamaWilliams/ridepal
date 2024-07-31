@@ -41,7 +41,7 @@
 .checkGroup{
     padding: 10px 5px;
     display: flex;
-    gap: 10px;
+    gap: 11px;
 }
 
 .checkGroup label{
