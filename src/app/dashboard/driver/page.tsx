@@ -27,7 +27,7 @@ export default function Driver(){
         <main className={styles.main}>
             <h1>Welcome back, {context.username}</h1>
 
-            <form onSubmit={handleSubmit} method="post">
+            <form onSubmit={handleSubmit} method="post" autoComplete="off">
                 <h3>Publish a route</h3>
                 <TextSelect name="pickup" label="Pickup Location" type="search" />
                 <TextSelect name="drop" label="Drop Location" type="search" />

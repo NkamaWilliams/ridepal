@@ -26,6 +26,10 @@
     display: block;
 }
 
+.link:hover{
+    cursor:pointer;
+}
+
 .link:hover .highlight, .sidelink:hover .highlight{    
     width: 100%;
 }
@@ -50,6 +54,25 @@
     background-color: white;
     box-shadow: 2px 0 10px rgb(184, 184, 184);
     transition: left 0.3s ease;
+}
+
+.sidenav .darknav{
+    display: none;
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.267);
+    opacity: 0;
+    transition: width 0.3s ease;
+}
+
+.sidenav .darknav.reveal{
+    width: calc(100% - 300px);
+    display: block;
+    right: 0;
+    opacity: 1;
 }
 
 .sidenav header{

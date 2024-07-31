@@ -4,6 +4,7 @@ import Logo from "./logo";
 import Link from "next/link";
 import { useState } from "react";
 import styles from "@/styles/general/navbar.module.css"
+import { Libre_Franklin } from "next/font/google";
 
 export default function Navbar(){
     //The menu state is used to control if the side-nav is open or closed
@@ -22,10 +23,15 @@ export default function Navbar(){
             <button title="menu" className={styles.menuIcon} onClick={handleMenu}>
                 <Icon /> 
             </button>
-            <Link className={styles.link} href="/">
+            {/* <Link className={styles.link} href="/">
                 <Logo />
                 <div className={styles.highlight}></div>
-            </Link>
+            </Link> */}
+
+            <p className={styles.link} onClick={handleMenu}>
+                <Logo />
+                {/* <div className={styles.highlight}></div> */}
+            </p>
 
             <div className={styles.menu}>
                 <Link className={styles.link} href="/signup">
@@ -44,10 +50,9 @@ export default function Navbar(){
                     <button title="menu" className={styles.menuIcon} onClick={handleMenu}>
                         <Icon /> 
                     </button>
-                    <Link className={styles.link} href="/">
+                    <p className={styles.link} onClick={handleMenu}>
                         <Logo/>
-                        <div className={styles.highlight}></div>
-                    </Link>
+                    </p>
                 </header>
 
                 <section className={styles.sidelinkContainer}>
@@ -68,6 +73,8 @@ export default function Navbar(){
                         <div className={styles.highlight}></div>
                     </Link>
                 </section>
+
+                <div className={`${styles.darknav} ${menu && styles.reveal}`}></div>
             </div>
         </nav>
     )

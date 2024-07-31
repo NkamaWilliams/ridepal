@@ -5,6 +5,7 @@ import TextSelect from "@/components/form/text-select"
 import Button from "@/components/general/button"
 import DateTime from "@/components/form/date-time"
 import { useState } from "react"
+import Icon from "@/components/general/icon"
 
 interface SelectionProp{
     name: string,
@@ -53,6 +54,7 @@ export default function Driver(){
             </form>
 
         </main>}
+
         {viewResults && <div className={styles.results}>
             <div className={styles.back}>
                 <Button functionality={() => {setViewResults(false)}} text="< Go Back"/>
@@ -84,6 +86,9 @@ function Selection({name, car, plates, details}: SelectionProp){
 
         {viewPopup && <div className={styles.popup}>
             <div className={styles.details}>
+                <div className={styles.close} onClick={() => {setViewPopup(false)}}>
+                    <Icon small src="/assets/close.png"/>
+                </div>
                 <h2>{name}</h2>
                 <h3>{car}</h3>
 

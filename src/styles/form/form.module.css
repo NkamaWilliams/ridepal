@@ -32,8 +32,8 @@
 
 .inputGroup .search{
     padding-left: 40px;
-    background-image: url("/assets/menu.svg");
-    background-size: 20px;
+    background-image: url("/assets/location2.png");
+    background-size: 15px;
     background-position: 10px center;
     background-repeat: no-repeat;
 }
@@ -70,6 +70,7 @@
     overflow: auto;
     border: 1px solid var(--input-label);
     border-radius: 8px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.);
 }
 
 .dropdownContent::-webkit-scrollbar{
@@ -86,7 +87,7 @@
 }
 
 .dropdownContent button:hover{
-    background-color: lightgray;
+    background-color: var(--nav-bg);
     cursor: pointer;
 }
 
@@ -99,7 +100,7 @@
     display: none;
 }
 
-@media (max-width: 450px){
+@media (max-width: 250px){
     .datetime{
         flex-direction: column;
     }

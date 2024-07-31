@@ -8,7 +8,7 @@ import Alert from "@/components/general/alert";
 import { useRouter } from "next/navigation";
 import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
-import { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
 import { useState } from "react";
 
 export default function Home() {
@@ -52,7 +52,7 @@ export default function Home() {
       sessionStorage.setItem("token", "");
     } finally{
       setLoading(false)
-      if (sessionStorage.getItem("id") && sessionStorage.getItem("id") !+ ""){
+      if (sessionStorage.getItem("id") && sessionStorage.getItem("id") != ""){
         route.push("/dashboard/driver")
       }
       else{
@@ -61,6 +61,10 @@ export default function Home() {
       }
     }
   }
+
+  // useEffect(() => {
+  //   sessionStorage.clear()
+  // }, [])
 
   return (
     <main className={styles.main}>
