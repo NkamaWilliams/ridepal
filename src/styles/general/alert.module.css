@@ -8,7 +8,6 @@
     width: 100%;
     aspect-ratio: 2.3;
     text-align: center;
-    display: flex;
     align-items: center;
     justify-content: center;
     transform: translateX(-50%);
@@ -30,7 +29,7 @@
 }
 
 .show{
-    display: block;
+    display: flex;
     opacity: 1;
     top: 50px;
 }

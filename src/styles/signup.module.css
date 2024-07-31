@@ -31,4 +31,13 @@
         flex-direction: column;
         gap: 0;
     }
+
+    .choice{
+        flex-direction: column;
+        column-gap: 20px;
+    }
+
+    .choice > div{
+        width: 100%;
+    }
 }

@@ -17,6 +17,6 @@ export default function DashboardLayout({children}: Readonly<{children:ReactNode
         }, [context, route]
     )
     return<>
-        {children}
+        {(sessionStorage.getItem("id") && sessionStorage.getItem("id") != "") && children}
     </>
 }

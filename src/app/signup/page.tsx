@@ -10,7 +10,7 @@ export default function SignUp(){
             <h1 className={styles.tagline}>Create an account with <Logo inheritFont/></h1>
 
             <div className={styles.choice}>
-            <div>
+                <div>
                     <Link href="/signup/driver">
                         <Button text="Driver's Account"/>
                     </Link>
