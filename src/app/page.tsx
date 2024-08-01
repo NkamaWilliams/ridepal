@@ -8,7 +8,7 @@ import Alert from "@/components/general/alert";
 import { useRouter } from "next/navigation";
 import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
-import { FormEvent, useEffect } from "react";
+import { FormEvent } from "react";
 import { useState } from "react";
 
 export default function Home() {
@@ -62,14 +62,10 @@ export default function Home() {
     }
   }
 
-  // useEffect(() => {
-  //   sessionStorage.clear()
-  // }, [])
-
   return (
     <main className={styles.main}>
       {loading && <Loading />}
-      <Alert type={2} message="Failure is you, and so is me! You sure your login is correct?" hide={hideAlert}/>
+      <Alert type={2} message="Failed to login! Ensure you input the correct details." hide={hideAlert}/>
       <form onSubmit={handleSubmit} className={styles.form} method="post">
         <h1>Login</h1>
         <TextInput label="Email" type="email" name="email"/>

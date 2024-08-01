@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
     const route = useRouter();
+    const [message, setMessage] = useState<string>("Please wait for verification mail before attempting to login!")
     const [loading, setLoading] = useState<boolean>(false)
     const [hidealert, setAlert] = useState<boolean>(true)
 
@@ -33,9 +34,11 @@ export default function Home() {
             }
             if (response.status == 201){
                 setAlert(false)
+                setMessage("Please wait for verification mail before attempting to login!")
             }
         } catch(err){
             console.log(err)
+            setMessage("Failed to signup. Ensure all information is correct!")
         } finally{
             setLoading(false)
             setTimeout(() => {setAlert(true)}, 3500)
@@ -46,9 +49,9 @@ export default function Home() {
   return (
     <main className={styles.main}>
       {loading && <Loading />}
-      <Alert type={1} message="Please wait for verification mail before attempting to login!" hide={hidealert}/>
+      <Alert type={1} message={message} hide={hidealert}/>
       <form onSubmit={handleSubmit} className={styles.form} method="post">
-        <h1>Create a driver&apos;s account</h1>
+        <h1>Create a rider&apos;s account</h1>
         <br/>
         <p><b>Personal Information</b></p>
         <div className={styles2.group}>
