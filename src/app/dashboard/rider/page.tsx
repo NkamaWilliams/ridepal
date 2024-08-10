@@ -3,7 +3,7 @@ import styles from "@/styles/dashboard.module.css"
 import { useAppContext } from "@/components/general/appcontext"
 import TextSelect from "@/components/form/text-select"
 import Button from "@/components/general/button"
-import DateTime from "@/components/form/date-time"
+import endpoint from "@/resources/api-endpoint.json"
 import { useState } from "react"
 import Icon from "@/components/general/icon"
 
@@ -14,31 +14,76 @@ interface SelectionProp{
     details: string,
 }
 
+interface driverInfo{
+    driverId: string,
+    firstName: string,
+    lastName: string|null,
+    email: string,
+    company: string
+}
+
+interface rideInfo{
+    id: string,
+    startTime: string,
+    vehicle: vehicleInfo,
+    seatAvailable: number,
+    instruction: string,
+}
+
+interface vehicleInfo{
+    plateNumber: string,
+    seatNumber: number,
+    color: string,
+    model: string,
+    ownerId: string,
+}
+
+interface routeInfo{
+    id: string,
+    startPoint: string,
+    destination: string,
+    driver: driverInfo,
+    ride: rideInfo,
+    publishedAt: string,
+}
+
 export default function Driver(){
     const context = useAppContext()
     const [viewResults, setViewResults] = useState(false)
-    const info = [
-        {
-            "Name": "My Driver",
-            "Car": "Toyota Camry",
-            "Plate Number": "CV452JKJ",
-            "Details": "There is an AC. Everyone is expected to keep silent throughout the ride."
-        },
-        {
-            "Name": "My Driver",
-            "Car": "Toyota Camry",
-            "Plate Number": "CV452JKJ",
-            "Details": "There is an AC. Everyone is expected to keep silent throughout the ride."
-        },
-        {
-            "Name": "My Driver",
-            "Car": "Toyota Camry",
-            "Plate Number": "CV452JKJ",
-            "Details": "There is an AC. Everyone is expected to keep silent throughout the ride."
-        }
-    ]
-    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    const [routes, setRoutes] = useState<routeInfo[]>([])
+    
+    const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        const api = `${endpoint}passenger/select-routes/`
+        const token = sessionStorage.getItem("token")
+        const entries = Object.fromEntries(new FormData(e.currentTarget).entries())
+        const raw = {
+        "source": entries["source"].toString(),
+        "destination": entries["destination"].toString(),
+        }
+        try{
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `Bearer ${token} backend`
+                },
+                body: JSON.stringify(raw),
+            }
+            const response = await fetch(api, requestOptions)
+            if (response.ok){
+                console.log("Search Complete!");
+                const data = await response.json();
+                console.log(data);
+                if (data.routes.length > 1){
+                    setRoutes(data.routes);
+                }
+            }
+        } catch(e){
+            console.error(e)
+        } finally{
+            setViewResults(true)
+        }
     }
     return(
         <>
@@ -47,10 +92,9 @@ export default function Driver(){
 
             <form onSubmit={handleSubmit} method="post">
                 <h3>Find a route</h3>
-                <TextSelect name="pickup" label="Pickup Location" type="search" />
-                <TextSelect name="drop" label="Drop Location" type="search" />
-                <DateTime />
-                <Button functionality={() => {setViewResults(true)}} text="Search" />
+                <TextSelect name="source" label="Pickup Location" type="search" />
+                <TextSelect name="destination" label="Drop Location" type="search" />
+                <Button text="Search" />
             </form>
 
         </main>}
@@ -63,9 +107,12 @@ export default function Driver(){
             <h2>Results</h2>
 
             <div className={styles.group}>
-                {info.map(details => 
-                    <Selection key={details["Plate Number"]} name={details.Name} car={details.Car} plates={details["Plate Number"]} details={details.Details}/>
+                {routes.map(details => 
+                    <Selection key={details.ride.vehicle.plateNumber} name={details.driver.firstName} car={details.ride.vehicle.model} plates={details.ride.vehicle.plateNumber} details={details.ride.instruction}/>
                 )}
+                {routes.length < 1 && 
+                    <p>No routes found!</p>
+                }
             </div>
         </div>}
         </>

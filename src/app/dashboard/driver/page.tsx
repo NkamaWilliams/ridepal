@@ -1,22 +1,63 @@
 'use client'
 import styles from "@/styles/dashboard.module.css"
+import formStyles from "@/styles/form/form.module.css"
 import { useAppContext } from "@/components/general/appcontext"
 import TextSelect from "@/components/form/text-select"
-import Checkbox from "@/components/form/checkbox"
+import Icon from "@/components/general/icon"
 import Button from "@/components/general/button"
-import DateTime from "@/components/form/date-time"
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
+import endpoint from "@/resources/api-endpoint.json"
+import Loading from "@/components/general/loading"
 
 interface stopProps{
-    func: () => void
+    func: React.Dispatch<SetStateAction<string[]>>,
+    close: () => void,
+    routes: string[]
 }
 
 export default function Driver(){
     const context = useAppContext()
+    const [isLoading, setLoading] = useState<boolean>(false)
+    const [routes, setRoutes] = useState<string[]>([])
     const [stops, setStops] = useState<boolean>(false)
-    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setLoading(true)
+        const entries = Object.fromEntries(new FormData(e.currentTarget).entries())
+        const raw = {
+        "startPoint": entries["startPoint"].toString(),
+        "destination": entries["destination"].toString(),
+        "routes": routes,
+        "vehicleId": sessionStorage.getItem("v-id"),
+        "seatAvailable": entries["seatAvailable"].toString(),
+        "instruction": entries["instruction"].toString(),
+        }
+        const api = endpoint + "route/publish"
+        const token = sessionStorage.getItem("token")
+        try{
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `Bearer ${token} backend`
+                },
+                body: JSON.stringify(raw),
+            }
+            const response = await fetch(api, requestOptions)
+            if (response.ok){
+                console.log("SUCCESS PEOPLE!");
+            }
+            else{
+                console.log(await response.text())
+            }
+        } catch(e){
+            console.error(e)
+            console.log("I Failed!")
+        } finally{
+            setLoading(false)
+        }
     }
+
     const closeStops = () => {
         setStops(false)
     }
@@ -25,15 +66,17 @@ export default function Driver(){
     }
     return(
         <main className={styles.main}>
+            {isLoading && <Loading/>}
             <h1>Welcome back, {context.username}</h1>
 
             <form onSubmit={handleSubmit} method="post" autoComplete="off">
                 <h3>Publish a route</h3>
-                <TextSelect name="pickup" label="Pickup Location" type="search" />
-                <TextSelect name="drop" label="Drop Location" type="search" />
-                <DateTime />
-                {stops && <Stops func={closeStops}/>}
-                <Button functionality={openStops} text="Choose Stops" type="button" design={2}/>
+                <TextSelect name="startPoint" label="Pickup Location" type="search" />
+                <TextSelect name="destination" label="Drop Location" type="search" />
+                <TextSelect name="seatAvailable" pattern="\d+" label="Seats Available" type="text"/>
+                <TextSelect name="instruction" label="Instructions" type="area" />
+                {stops && <Stops func={setRoutes} close={closeStops} routes={routes}/>}
+                <Button functionality={openStops} text="Add Stops" type="button" design={2}/>
                 <Button text="Publish" />
             </form>
 
@@ -41,14 +84,44 @@ export default function Driver(){
     )
 }
 
-function Stops({func}: stopProps){
+function Stops({func, close, routes}: stopProps){
+    const [value, setValue] = useState<string>("")
+    const handleRemove = (e:string) => {
+        func(routes.filter(route => route != e))
+    }
     return(
         <div className={styles.busStops}>
             <div className={styles.choices}>
-                <h3>Select all stops!</h3>
+                <div onClick={close} className={styles.close}>
+                    <Icon small src="/assets/close.png"/>
+                </div>
+                <h3>Add all stops!</h3>
 
-                <Checkbox name="stop" label="Num 2, Ademuyiwa Street, Ikeja"/>
-                <Button functionality={func} type="button" text="Done" design={2}/>
+                <div className={styles.stopList}>
+                    {
+                        routes.map(route => 
+                            <p key={route.toUpperCase()}>{route} <button 
+                            onClick={() => {handleRemove(route)}} type="button" className={styles.removebtn}>—</button></p>
+                        )
+                    }
+                </div>
+
+                <div className={formStyles.inputGroup}>
+                    <label htmlFor="add"><b>Add Stop</b></label>
+                    <input
+                    onChange={(e) => {setValue(e.target.value)}}
+                     value={value} type="text" name="route" id="add"></input>
+                </div>
+                <Button 
+                functionality={
+                    () => {
+                        func([...routes, value])
+                        setValue("")
+                    }
+                } 
+                type="button" 
+                text="Add" 
+                design={2}/>
             </div>
         </div>
     )

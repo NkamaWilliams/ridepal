@@ -8,7 +8,7 @@ import Alert from "@/components/general/alert";
 import { useRouter } from "next/navigation";
 import endpoint from "@/resources/api-endpoint.json"
 import styles from "@/styles/page.module.css";
-import { FormEvent } from "react";
+import { FormEvent, use } from "react";
 import { useState } from "react";
 
 export default function Home() {
@@ -39,11 +39,15 @@ export default function Home() {
       if (response.status == 200){
         const result = await response.json()
         const data = result.data
-        context.setContext(data.user.id, data.user.email, data.user.username, data.accessToken)
+        context.setContext(data.user.id, data.user.email, data.user.firstName, data.accessToken)
         console.log("Context Set!")
         sessionStorage.setItem("id", data.user.id);
         sessionStorage.setItem("username", data.user.username);
         sessionStorage.setItem("token", data.accessToken);
+        sessionStorage.setItem("type", data.user.type??"rider");
+        if (data.user.type == "driver"){
+          sessionStorage.setItem("v-id", data.vechile.id)
+        }
       }
     } catch(err){
       console.log(err)
@@ -53,7 +57,12 @@ export default function Home() {
     } finally{
       setLoading(false)
       if (sessionStorage.getItem("id") && sessionStorage.getItem("id") != ""){
-        route.push("/dashboard/driver")
+        if (sessionStorage.getItem("type") == "driver"){
+          route.push("/dashboard/driver")
+        }
+        else{
+          route.push("/dashboard/rider")
+        }
       }
       else{
         setAlert(false)

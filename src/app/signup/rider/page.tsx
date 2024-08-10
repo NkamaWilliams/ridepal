@@ -26,11 +26,10 @@ export default function Home() {
                 method: 'POST',
                 body: data,
             };
-            let response = await fetch(`${endpoint[0]}driver/signup/`, requestOptions);
-            console.log(response.status)
-            console.log(await response.text())
-            if (response.status == 400){
+            let response = await fetch(`${endpoint[0]}passenger/signup/`, requestOptions);
+            if (!response.ok){
                 console.log("Bad request!");
+                setMessage("Failed to register you!")
             }
             if (response.status == 201){
                 setAlert(false)

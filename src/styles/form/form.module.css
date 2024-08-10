@@ -15,7 +15,7 @@
     font-size: 14px;
 }
 
-.inputGroup input{
+.inputGroup input, .inputGroup textarea{
     width: calc(100% - 10px);
     height: 40px;
     margin: 0 5px;
@@ -24,6 +24,10 @@
     border-radius: 8px;
     border: 1px solid var(--input-label);
     font-size: 16px;
+}
+
+.inputGroup textarea{
+    height: 70px;
 }
 
 .bold{

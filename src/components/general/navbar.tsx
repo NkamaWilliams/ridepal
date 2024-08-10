@@ -2,13 +2,14 @@
 import Icon from "./icon";
 import Logo from "./logo";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "@/styles/general/navbar.module.css"
 import { Libre_Franklin } from "next/font/google";
 
 export default function Navbar(){
     //The menu state is used to control if the side-nav is open or closed
     const [menu, setMenu] = useState<boolean>(false);
+    const [type, setType] = useState<string>()
 
     const handleMenu = () => {
         setMenu(!menu);
@@ -17,6 +18,12 @@ export default function Navbar(){
     const closeSidenav = () => {
         setMenu(false)
     }
+
+    useEffect(
+        () => {
+            setType(sessionStorage.getItem("type") ?? "passenger")
+        }
+    )
 
     return(
         <nav className={styles.nav}>
@@ -28,10 +35,10 @@ export default function Navbar(){
                 <div className={styles.highlight}></div>
             </Link> */}
 
-            <p className={styles.link} onClick={handleMenu}>
+            <div className={styles.link} onClick={handleMenu}>
                 <Logo />
                 {/* <div className={styles.highlight}></div> */}
-            </p>
+            </div>
 
             <div className={styles.menu}>
                 <Link className={styles.link} href="/signup">
@@ -50,12 +57,13 @@ export default function Navbar(){
                     <button title="menu" className={styles.menuIcon} onClick={handleMenu}>
                         <Icon /> 
                     </button>
-                    <p className={styles.link} onClick={handleMenu}>
+                    <div className={styles.link} onClick={handleMenu}>
                         <Logo/>
-                    </p>
+                    </div>
                 </header>
 
                 <section className={styles.sidelinkContainer}>
+                    {type == "driver" && <>
                     <h3>Driver </h3>
                     <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/driver">
                         <p>Create Route</p>
@@ -66,12 +74,15 @@ export default function Navbar(){
                         <p>View Route</p>
                         <div className={styles.highlight}></div>
                     </Link>
+                    </>}
 
+                    {type == "passenger" && <>
                     <h3>Passenger </h3>
                     <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/rider">
                         <p>Book ride</p>
                         <div className={styles.highlight}></div>
                     </Link>
+                    </>}
                 </section>
 
                 <div className={`${styles.darknav} ${menu && styles.reveal}`}></div>
