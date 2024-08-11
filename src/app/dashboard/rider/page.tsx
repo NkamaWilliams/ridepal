@@ -3,15 +3,19 @@ import styles from "@/styles/dashboard.module.css"
 import { useAppContext } from "@/components/general/appcontext"
 import TextSelect from "@/components/form/text-select"
 import Button from "@/components/general/button"
-import endpoint from "@/resources/api-endpoint.json"
-import { useState } from "react"
 import Icon from "@/components/general/icon"
+import Loading from "@/components/general/loading"
+import Alert from "@/components/general/alert"
+import React, { useState } from "react"
+import endpoint from "@/resources/api-endpoint.json"
 
 interface SelectionProp{
     name: string,
     car: string,
     plates: string,
     details: string,
+    seats: number,
+    id: string,
 }
 
 interface driverInfo{
@@ -75,9 +79,7 @@ export default function Driver(){
                 console.log("Search Complete!");
                 const data = await response.json();
                 console.log(data);
-                if (data.routes.length > 1){
-                    setRoutes(data.routes);
-                }
+                setRoutes(data.routes);
             }
         } catch(e){
             console.error(e)
@@ -108,7 +110,7 @@ export default function Driver(){
 
             <div className={styles.group}>
                 {routes.map(details => 
-                    <Selection key={details.ride.vehicle.plateNumber} name={details.driver.firstName} car={details.ride.vehicle.model} plates={details.ride.vehicle.plateNumber} details={details.ride.instruction}/>
+                    <Selection key={details.ride.vehicle.plateNumber} name={details.driver.firstName} car={details.ride.vehicle.model} plates={details.ride.vehicle.plateNumber} details={details.ride.instruction} seats={details.ride.seatAvailable} id={details.id}/>
                 )}
                 {routes.length < 1 && 
                     <p>No routes found!</p>
@@ -119,11 +121,45 @@ export default function Driver(){
     )
 }
 
-function Selection({name, car, plates, details}: SelectionProp){
+function Selection({name, car, plates, details, seats, id}: SelectionProp){
     const [viewPopup, setViewPopup] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [hideAlert, setAlert] = useState<boolean>(true)
+
+    //Joining a ride
+    const handleJoin = async () => {
+        const api = `${endpoint}passenger/join-ride/`
+        const raw = {
+            routeId: id,
+        }
+        const token = sessionStorage.getItem("token")
+        try{
+            setLoading(true)
+            const requestOptions = {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `Bearer ${token} backend`
+                },
+                body: JSON.stringify(raw),
+            }
+            const response = await fetch(api, requestOptions)
+            if (response.ok){
+                setAlert(false)
+                setViewPopup(false)
+            }
+        } catch(err){
+            console.error(err)
+        } finally{
+            setLoading(false)
+            setTimeout(() => {setAlert(true)}, 3500)
+        }
+    }
     return(
         <>
         <div onClick={() => {setViewPopup(true)}} className={styles.selection}>
+            {loading && <Loading />}
+            <Alert type={1} message="Successfully booked a ride! Have a nice trip!" hide={hideAlert}/>
             <h3>{name}</h3>
             <div className={styles.summary}>
                 <p>{car}</p>
@@ -143,11 +179,11 @@ function Selection({name, car, plates, details}: SelectionProp){
 
                 <div>
                     <p><b>Departure Time: </b> 12:00pm</p>
-                    <p><b>Seats Available:</b> 4</p>
+                    <p><b>Seats Available:</b> {seats}</p>
                 </div>
 
                 <div className={styles.btn}>
-                    <Button functionality={() => {setViewPopup(false)}} text="Book Ride" design={2}/>
+                    <Button functionality={handleJoin} text="Book Ride" design={2}/>
                 </div>
             </div>
         </div>}
