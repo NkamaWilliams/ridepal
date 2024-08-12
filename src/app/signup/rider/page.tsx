@@ -37,12 +37,12 @@ export default function Home() {
                 setAlert({type:2, message:"Failed to register you! Check console for more details"})
             }
             if (response.status == 201){
-                setHideAlert(false)
                 setAlert({type: 1, message: "Please wait for verification mail before attempting to login!"})
             }
         } catch(err){
             console.log(err)
         } finally{
+            setHideAlert(false)
             setLoading(false)
             setTimeout(() => {setHideAlert(true)}, 3500)
             // route.push("/")
