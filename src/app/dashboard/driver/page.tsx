@@ -5,6 +5,7 @@ import { useAppContext } from "@/components/general/appcontext"
 import TextSelect from "@/components/form/text-select"
 import Icon from "@/components/general/icon"
 import Button from "@/components/general/button"
+import Alert from "@/components/general/alert"
 import { SetStateAction, useState } from "react"
 import endpoint from "@/resources/api-endpoint.json"
 import Loading from "@/components/general/loading"
@@ -15,11 +16,18 @@ interface stopProps{
     routes: string[]
 }
 
+interface alert{
+    type: 1|2,
+    message: string,
+}
+
 export default function Driver(){
     const context = useAppContext()
     const [isLoading, setLoading] = useState<boolean>(false)
     const [routes, setRoutes] = useState<string[]>([])
     const [stops, setStops] = useState<boolean>(false)
+    const [hideAlert, setHideAlert] = useState<boolean>(true)
+    const [alert, setAlert] = useState<alert>({type:1, message:"Route created successfully!"})
     const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setLoading(true)
@@ -46,15 +54,19 @@ export default function Driver(){
             const response = await fetch(api, requestOptions)
             if (response.ok){
                 console.log("SUCCESS PEOPLE!");
+                setAlert({type:1, message:"Route created successfully!"})
             }
             else{
                 console.log(await response.text())
+                setAlert({type:2, message:"Failed to create route! Check for unfinished routes!"})
             }
         } catch(e){
             console.error(e)
             console.log("I Failed!")
         } finally{
             setLoading(false)
+            setHideAlert(false)
+            setTimeout(() => {setHideAlert(true)}, 3500)
         }
     }
 
@@ -66,6 +78,7 @@ export default function Driver(){
     }
     return(
         <main className={styles.main}>
+            <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
             {isLoading && <Loading/>}
             <h1>Welcome back, {context.username}</h1>
 
