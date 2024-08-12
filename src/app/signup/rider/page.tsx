@@ -11,11 +11,16 @@ import { useState } from "react";
 import { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
+interface alert{
+    type: 1|2,
+    message: string,
+}
+
 export default function Home() {
     const route = useRouter();
-    const [message, setMessage] = useState<string>("Please wait for verification mail before attempting to login!")
+    const [alert, setAlert] = useState<alert>({type: 1, message: "Please wait for verification mail before attempting to login!"})
     const [loading, setLoading] = useState<boolean>(false)
-    const [hidealert, setAlert] = useState<boolean>(true)
+    const [hidealert, setHideAlert] = useState<boolean>(true)
 
     const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -29,18 +34,17 @@ export default function Home() {
             let response = await fetch(`${endpoint[0]}passenger/signup/`, requestOptions);
             if (!response.ok){
                 console.log("Bad request!");
-                setMessage("Failed to register you!")
+                setAlert({type:2, message:"Failed to register you! Check console for more details"})
             }
             if (response.status == 201){
-                setAlert(false)
-                setMessage("Please wait for verification mail before attempting to login!")
+                setHideAlert(false)
+                setAlert({type: 1, message: "Please wait for verification mail before attempting to login!"})
             }
         } catch(err){
             console.log(err)
-            setMessage("Failed to signup. Ensure all information is correct!")
         } finally{
             setLoading(false)
-            setTimeout(() => {setAlert(true)}, 3500)
+            setTimeout(() => {setHideAlert(true)}, 3500)
             // route.push("/")
         }
     }
@@ -48,7 +52,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       {loading && <Loading />}
-      <Alert type={1} message={message} hide={hidealert}/>
+      <Alert type={alert.type} message={alert.message} hide={hidealert}/>
       <form onSubmit={handleSubmit} className={styles.form} method="post">
         <h1>Create a rider&apos;s account</h1>
         <br/>
