@@ -125,6 +125,7 @@ function Selection({name, car, plates, details, seats, id}: SelectionProp){
     const [viewPopup, setViewPopup] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [hideAlert, setAlert] = useState<boolean>(true)
+    const [message, setMessage] = useState<string>("")
 
     //Joining a ride
     const handleJoin = async () => {
@@ -147,6 +148,10 @@ function Selection({name, car, plates, details, seats, id}: SelectionProp){
             if (response.ok){
                 setAlert(false)
                 setViewPopup(false)
+                setMessage("Successfully booked a ride! Have a nice trip!")
+            }
+            else{
+                setMessage(await response.text())
             }
         } catch(err){
             console.error(err)
@@ -159,7 +164,7 @@ function Selection({name, car, plates, details, seats, id}: SelectionProp){
         <>
         <div onClick={() => {setViewPopup(true)}} className={styles.selection}>
             {loading && <Loading />}
-            <Alert type={1} message="Successfully booked a ride! Have a nice trip!" hide={hideAlert}/>
+            <Alert type={1} message={message} hide={hideAlert}/>
             <h3>{name}</h3>
             <div className={styles.summary}>
                 <p>{car}</p>

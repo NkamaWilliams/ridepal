@@ -15,6 +15,8 @@ export default function Home() {
   const context = useAppContext()
   const [loading, setLoading] = useState<boolean>(false)
   const [hideAlert, setAlert] = useState<boolean>(true)
+  const [message, setMessage] = useState<string>("")
+  const [type, setType] = useState<1|2>(2)
   const route = useRouter()
 
   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
@@ -35,9 +37,11 @@ export default function Home() {
       }
 
       const response = await fetch(`${endpoint[0]}auth/signin`, requestOptions)
-
-      if (response.status == 200){
+      if (response.ok){
         const result = await response.json()
+        if (result.code == 401){
+          setMessage("Wrong password provided!")
+        }
         const data = result.data
         context.setContext(data.user.id, data.user.email, data.user.firstName, data.accessToken)
         console.log("Context Set!")
@@ -48,6 +52,11 @@ export default function Home() {
         if (data.user.type == "driver"){
           sessionStorage.setItem("v-id", data.vechile.id)
         }
+      }
+      if (!response.ok){
+        console.log("I'm not OK!")
+        const text = JSON.parse(await response.text())
+        setMessage(text.message)
       }
     } catch(err){
       console.log(err)
@@ -74,7 +83,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       {loading && <Loading />}
-      <Alert type={2} message="Failed to login! Ensure you input the correct details." hide={hideAlert}/>
+      <Alert type={type} message={message} hide={hideAlert}/>
       <form onSubmit={handleSubmit} className={styles.form} method="post">
         <h1>Login</h1>
         <TextInput label="Email" type="email" name="email"/>

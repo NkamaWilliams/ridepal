@@ -33,16 +33,12 @@ export default function Home() {
             };
             let response = await fetch(`${endpoint[0]}driver/signup/`, requestOptions);
             console.log(response.status)
-            console.log(await response.text())
-            if (response.status == 400){
-                console.log("Bad request!");
-                
-            }
             if (response.ok){
                 setAlert({type: 1, message: "Please wait for verification mail before attempting to login!"})
             }
             else{
-                setAlert({type: 2, message: "Failed to create account! Check console for more info!"})
+                const text = JSON.parse(await response.text())
+                setAlert({type: 2, message: text.message})
             }
         } catch(err){
             console.log(err)

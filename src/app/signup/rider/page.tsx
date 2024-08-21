@@ -34,7 +34,8 @@ export default function Home() {
             let response = await fetch(`${endpoint[0]}passenger/signup/`, requestOptions);
             if (!response.ok){
                 console.log("Bad request!");
-                setAlert({type:2, message:"Failed to register you! Check console for more details"})
+                const text = JSON.parse(await response.text())
+                setAlert({type: 2, message: text.message})
             }
             if (response.status == 201){
                 setAlert({type: 1, message: "Please wait for verification mail before attempting to login!"})
