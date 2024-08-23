@@ -3,10 +3,13 @@ import Icon from "./icon";
 import Logo from "./logo";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useAppContext } from "./appcontext";
+import { usePathname } from "next/navigation";
 import styles from "@/styles/general/navbar.module.css"
-import { Libre_Franklin } from "next/font/google";
 
 export default function Navbar(){
+    const context = useAppContext()
+    const path = usePathname()
     //The menu state is used to control if the side-nav is open or closed
     const [menu, setMenu] = useState<boolean>(false);
     const [type, setType] = useState<string>()
@@ -22,7 +25,8 @@ export default function Navbar(){
     useEffect(
         () => {
             setType(sessionStorage.getItem("type") ?? "passenger")
-        }
+            console.log(path)
+        },[]
     )
 
     return(
@@ -30,17 +34,13 @@ export default function Navbar(){
             <button title="menu" className={styles.menuIcon} onClick={handleMenu}>
                 <Icon /> 
             </button>
-            {/* <Link className={styles.link} href="/">
-                <Logo />
-                <div className={styles.highlight}></div>
-            </Link> */}
 
             <div className={styles.link} onClick={handleMenu}>
                 <Logo />
-                {/* <div className={styles.highlight}></div> */}
             </div>
 
             <div className={styles.menu}>
+                {(path == "/" || path.includes("signup")) &&<>
                 <Link className={styles.link} href="/signup">
                     <p>Sign Up</p>
                     <div className={styles.highlight}></div>
@@ -50,6 +50,11 @@ export default function Navbar(){
                     <p>Login</p>
                     <div className={styles.highlight}></div>
                 </Link>
+                </>}
+                
+                {path.includes("dashboard") &&
+                    <Link href="/" onClick={context.logout}>Logout</Link>
+                }
             </div>
 
             <div className={`${styles.sidenav} ${menu && styles.open}`}>

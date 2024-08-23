@@ -44,9 +44,10 @@ export default function Home() {
         }
         const data = result.data
         context.setContext(data.user.id, data.user.email, data.user.firstName, data.accessToken)
+        let name = data.user.firstName?? data.user.username
         console.log("Context Set!")
         sessionStorage.setItem("id", data.user.id);
-        sessionStorage.setItem("username", data.user.username);
+        sessionStorage.setItem("username", name);
         sessionStorage.setItem("token", data.accessToken);
         sessionStorage.setItem("type", data.user.type??"rider");
         if (data.user.type == "driver"){

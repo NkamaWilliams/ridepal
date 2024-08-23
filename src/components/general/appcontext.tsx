@@ -10,7 +10,8 @@ interface contextType{
     email: string;
     username: string;
     accessToken: string;
-    setContext: (id: string, email: string, username: string, accessToken: string) => void 
+    setContext: (id: string, email: string, username: string, accessToken: string) => void,
+    logout: () => void
 }
 
 const Context = createContext<contextType>({
@@ -19,6 +20,7 @@ const Context = createContext<contextType>({
     username: "",
     accessToken: "",
     setContext: () => {},
+    logout: () => {}
 })
 
 export default function AppContext({children}:props){
@@ -33,8 +35,12 @@ export default function AppContext({children}:props){
         setUsername(username);
         setAccessToken(accessToken);
     }
+
+    const logout = () => {
+        sessionStorage.clear()
+    }
     return(
-        <Context.Provider value={{id, email, username, accessToken, setContext}}>
+        <Context.Provider value={{id, email, username, accessToken, setContext, logout}}>
             {children}
         </Context.Provider>
     )

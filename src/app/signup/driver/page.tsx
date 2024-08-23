@@ -47,7 +47,9 @@ export default function Home() {
             setHideAlert(false)
             setTimeout(() => {setHideAlert(true)}, 3500)
             setTimeout(() => {}, 3500)
-            // route.push("/")
+            if (alert.type == 1){
+                setTimeout(() => {route.push("/")}, 4500);
+            }
         }
     }
 

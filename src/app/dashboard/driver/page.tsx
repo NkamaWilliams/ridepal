@@ -6,7 +6,7 @@ import TextSelect from "@/components/form/text-select"
 import Icon from "@/components/general/icon"
 import Button from "@/components/general/button"
 import Alert from "@/components/general/alert"
-import { SetStateAction, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import endpoint from "@/resources/api-endpoint.json"
 import Loading from "@/components/general/loading"
 
@@ -76,6 +76,14 @@ export default function Driver(){
     const openStops = () => {
         setStops(true)
     }
+
+    const get = (info:string) => {
+        return sessionStorage.getItem(info)?? ""
+    }
+
+    useEffect(() => {
+        context.setContext(get("id"), "", get("username"), get("token"))
+    })
     return(
         <main className={styles.main}>
             <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
@@ -84,8 +92,8 @@ export default function Driver(){
 
             <form onSubmit={handleSubmit} method="post" autoComplete="off">
                 <h3>Publish a route</h3>
-                <TextSelect name="startPoint" label="Pickup Location" type="search" />
-                <TextSelect name="destination" label="Drop Location" type="search" />
+                <TextSelect name="startPoint" label="TakeOff" type="search" />
+                <TextSelect name="destination" label="Destination" type="search" />
                 <TextSelect name="seatAvailable" pattern="\d+" label="Seats Available" type="text"/>
                 <TextSelect name="instruction" label="Instructions" type="area" />
                 {stops && <Stops func={setRoutes} close={closeStops} routes={routes}/>}

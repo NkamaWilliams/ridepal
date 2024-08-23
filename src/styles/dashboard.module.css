@@ -80,16 +80,12 @@
     gap: 10px;
 }
 
-.stops p:first-child:hover{
-    background-color: transparent;
-}
-
-.stops p:hover, .choices p:hover{
+.choices p:hover{
     background-color: rgb(241, 241, 241);
     color: black;
 }
 
-.stops p:hover .removebtn, .choices p:hover .removebtn{
+.choices p:hover .removebtn{
     opacity: 1;
     cursor: pointer;
     display: block;
