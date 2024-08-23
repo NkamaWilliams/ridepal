@@ -84,6 +84,7 @@ export default function Route(){
             {/* {viewRate && <Rate handleClick={closeRate}/>} */}
             <h1>Active Routes</h1>
 
+            {rideDetails != null && 
             <div className={styles.route}>
                 <div>
                     <p><b>Departure Time</b></p>
@@ -106,6 +107,9 @@ export default function Route(){
                     <Button functionality={() => {start()}} text="Start Ride"/>
                 </div>}
             </div>
+            }
+
+            {rideDetails == null && <p>No active route!</p>}
         </main>
     )
 }
