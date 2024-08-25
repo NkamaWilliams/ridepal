@@ -26,7 +26,7 @@ export default function Navbar(){
         () => {
             setType(sessionStorage.getItem("type") ?? "passenger")
             console.log(path)
-        },[]
+        },[path]
     )
 
     return(
@@ -81,7 +81,7 @@ export default function Navbar(){
                     </Link>
                     </>}
 
-                    {type == "passenger" && <>
+                    {["passenger", "rider"].includes(type??"passenger") && <>
                     <h3>Passenger </h3>
                     <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/rider">
                         <p>Book ride</p>

@@ -26,7 +26,7 @@ export default function Route(){
         const api = endpoint + "driver/start-ride/"
         const token = sessionStorage.getItem("token")
         const raw = {
-            rideId: rideDetails?.rideId
+            "rideId": rideDetails?.rideId
         }
         try{
             const requestOptions = {
@@ -65,10 +65,10 @@ export default function Route(){
             if (response.ok){
                 const data = await response.json();
                 setRideDetails({
-                    startTime: data.ride.startTime,
+                    startTime: new Date(data.ride.startTime).toLocaleString([], {hour: "2-digit", minute: "2-digit", hour12: true}),
                     passengers: data.ride.passengers,
                     status: data.ride.status ,
-                    rideId: data.ride.routeId
+                    rideId: data.ride.id
                 })
             }
         } catch(e){
@@ -88,14 +88,21 @@ export default function Route(){
             <div className={styles.route}>
                 <div>
                     <p><b>Departure Time</b></p>
-                    <p>10:00 AM</p>
+                    <p>{rideDetails.startTime}</p>
                 </div>
 
                 <div className={styles.stops}>
                     <p><b>Passengers</b></p>
-                    <p> John Doe</p>
-                    <p> John Doe</p>
-                    <p> John Doe</p>
+                    {
+                        rideDetails.passengers.map(passenger => 
+                            <p key={passenger}>{passenger}</p>
+                        )
+                    }
+
+                    {
+                        rideDetails.passengers.length == 0 &&
+                        <p>No passengers will be on this ride!</p>
+                    }
                 </div>
 
                 {rideDetails?.status == "ongoing" &&<div>
