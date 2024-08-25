@@ -23,6 +23,7 @@ export default function Home() {
     const [hidealert, setHideAlert] = useState<boolean>(true)
 
     const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
+        let isOk = false
         e.preventDefault();
         setLoading(true)
         try{
@@ -39,16 +40,18 @@ export default function Home() {
             }
             if (response.status == 201){
                 setAlert({type: 1, message: "Please wait for verification mail before attempting to login!"})
+                isOk = true
+            }
+            setLoading(false)
+            setTimeout(() => {setHideAlert(true)}, 3500)
+            if (isOk){
+                route.push("/")
             }
         } catch(err){
             console.log(err)
         } finally{
             setHideAlert(false)
             setLoading(false)
-            setTimeout(() => {setHideAlert(true)}, 3500)
-            if (alert.type == 1){
-                setTimeout(() => {route.push("/")}, 4500);
-            }
         }
     }
 

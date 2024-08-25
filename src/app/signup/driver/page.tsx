@@ -23,6 +23,7 @@ export default function Home() {
     const [alert, setAlert] = useState<alert>({type: 1, message: "Please wait for verification mail before attempting to login!"})
 
     const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
+        let isOk = false;
         e.preventDefault();
         setLoading(true)
         try{
@@ -34,22 +35,27 @@ export default function Home() {
             let response = await fetch(`${endpoint[0]}driver/signup/`, requestOptions);
             console.log(response.status)
             if (response.ok){
-                setAlert({type: 1, message: "Please wait for verification mail before attempting to login!"})
+                setAlert({type: 1, message: "Please wait for verification mail before attempting to login!"});
+                isOk = true;
+                const result = await response.json()
+                if (result.code == 400){
+                    setAlert(prev => ({...prev, message:"Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character!"}))
+                }
             }
             else{
                 const text = JSON.parse(await response.text())
-                setAlert({type: 2, message: text.message})
+                setAlert({type: 2, message: text.message});
+            }
+            setLoading(false)
+            setTimeout(() => {setHideAlert(true)}, 3500);
+            if (isOk){
+                route.push("/")
             }
         } catch(err){
             console.log(err)
         } finally{
             setLoading(false)
             setHideAlert(false)
-            setTimeout(() => {setHideAlert(true)}, 3500)
-            setTimeout(() => {}, 3500)
-            if (alert.type == 1){
-                setTimeout(() => {route.push("/")}, 4500);
-            }
         }
     }
 
