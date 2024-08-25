@@ -39,9 +39,7 @@ export default function Home() {
       const response = await fetch(`${endpoint[0]}auth/signin`, requestOptions)
       if (response.ok){
         const result = await response.json()
-        if (result.code == 401){
-          setMessage("Wrong password provided!")
-        }
+        setMessage(result.message)
         const data = result.data
         context.setContext(data.user.id, data.user.email, data.user.firstName, data.accessToken)
         let name = data.user.firstName?? data.user.username
