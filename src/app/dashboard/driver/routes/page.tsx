@@ -2,6 +2,7 @@
 import styles from "@/styles/dashboard.module.css"
 import Rate from "@/components/general/rate"
 import Button from "@/components/general/button"
+import Alert from "@/components/general/alert"
 import { FormEvent, useState, useEffect } from "react"
 import endpoint from "@/resources/api-endpoint.json"
 import { redirect } from "next/dist/server/api-utils"
@@ -13,9 +14,16 @@ interface rideInfo {
     rideId: string
 }
 
+interface alertInter{
+    type: 1|2,
+    message: string,
+}
+
 export default function Route(){
     const [viewRate, setViewRate] = useState<boolean>(true)
     const [rideDetails, setRideDetails] = useState<rideInfo|null>(null)
+    const [hideAlert, setHideAlert] = useState<boolean>(true)
+    const [alert, setAlert] = useState<alertInter>({type: 1, message: ""})
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault()
     }
@@ -25,29 +33,39 @@ export default function Route(){
     const start = async () => {
         const api = endpoint + "driver/start-ride/"
         const token = sessionStorage.getItem("token")
-        const raw = {
-            "rideId": rideDetails?.rideId
+        let altType: 1|2 = 1
+        const raw2 = {
+            rideId: rideDetails?.rideId,
         }
         try{
-            const requestOptions = {
+            const req = {
                 method: 'POST',
-                body: JSON.stringify(raw),
+                // body: raw2,
+                body: JSON.stringify(raw2),
                 headers: {
-                    authorization: `Bearer ${token} backend`
+                    authorization: `Bearer ${token} backend`,
+                    'Content-Type': 'application/json'
                 }
             };
-            const response = await fetch(api, requestOptions);
+            const response = await fetch(api, req);
             const data = await response.json();
             if (response.ok){
                 setRideDetails({
                     startTime: data.ride.startTime,
                     passengers: data.ride.passengers,
                     status: data.ride.status,
-                    rideId: data.ride.routeId 
+                    rideId: data.ride.id 
                 })
             }
+            else{
+                altType = 2
+            }
+            setAlert({type: altType, message: data.message})
+            setHideAlert(false)
         } catch(e){
             console.error(e)
+        } finally{
+            setTimeout(() => {setHideAlert(true)}, 3500)
         }
     }
 
@@ -81,6 +99,7 @@ export default function Route(){
     }, [])
     return(
         <main className={styles.main}>
+        <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
             {/* {viewRate && <Rate handleClick={closeRate}/>} */}
             <h1>Active Routes</h1>
 
