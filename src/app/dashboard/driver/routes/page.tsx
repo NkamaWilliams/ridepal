@@ -3,6 +3,7 @@ import styles from "@/styles/dashboard.module.css"
 import Rate from "@/components/general/rate"
 import Button from "@/components/general/button"
 import Alert from "@/components/general/alert"
+import Loading from "@/components/general/loading"
 import { FormEvent, useState, useEffect } from "react"
 import endpoint from "@/resources/api-endpoint.json"
 import { redirect } from "next/dist/server/api-utils"
@@ -23,6 +24,7 @@ export default function Route(){
     const [viewRate, setViewRate] = useState<boolean>(true)
     const [rideDetails, setRideDetails] = useState<rideInfo|null>(null)
     const [hideAlert, setHideAlert] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(false)
     const [alert, setAlert] = useState<alertInter>({type: 1, message: ""})
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -94,11 +96,14 @@ export default function Route(){
         }
     }
     useEffect(() => {
+        setLoading(true)
         onLoad("driver/pending-ride/")
         onLoad("driver/ongoing-ride/")
+        setTimeout(() => {setLoading(false)}, 3000)
     }, [])
     return(
         <main className={styles.main}>
+        {loading && <Loading />}
         <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
             {/* {viewRate && <Rate handleClick={closeRate}/>} */}
             <h1>Active Routes</h1>
