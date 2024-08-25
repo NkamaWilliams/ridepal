@@ -57,8 +57,9 @@ export default function Driver(){
                 setAlert({type:1, message:"Route created successfully!"})
             }
             else{
-                console.log(await response.text())
-                setAlert({type:2, message:"Failed to create route! Check for unfinished routes!"})
+                const result = JSON.parse(await response.text())
+                console.log(result)
+                setAlert({type:2, message:result.code == 403 ? "Routes can only be created after verification of account!" : "Failed to create route! Check for unfinished routes!"})
             }
         } catch(e){
             console.error(e)

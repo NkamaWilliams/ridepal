@@ -45,7 +45,7 @@ export default function Home() {
             setLoading(false)
             setTimeout(() => {setHideAlert(true)}, 3500)
             if (isOk){
-                route.push("/")
+                setTimeout(() => {route.push("/")}, 4500)
             }
         } catch(err){
             console.log(err)
