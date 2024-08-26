@@ -6,13 +6,25 @@ import Alert from "@/components/general/alert"
 import Loading from "@/components/general/loading"
 import { FormEvent, useState, useEffect } from "react"
 import endpoint from "@/resources/api-endpoint.json"
-import { redirect } from "next/dist/server/api-utils"
 
 interface rideInfo {
     startTime: string,
-    passengers: string[],
+    passengers: passenger[],
     status: "pending" | "ongoing",
     rideId: string
+}
+
+interface passenger{
+    id: string, 
+    workAddress: string, 
+    workEmail: string, 
+    email: string, 
+    workID: string, 
+    firstName: string, 
+    lastName: string, 
+    profession: string, 
+    phoneNumber: string, 
+    companyName: string
 }
 
 interface alertInter{
@@ -95,6 +107,7 @@ export default function Route(){
             console.error(e)
         }
     }
+    
     useEffect(() => {
         setLoading(true)
         onLoad("driver/pending-ride/")
@@ -118,13 +131,13 @@ export default function Route(){
                 <div className={styles.stops}>
                     <p><b>Passengers</b></p>
                     {
-                        rideDetails.passengers.map(passenger => 
-                            <p key={passenger}>{passenger}</p>
+                        rideDetails?.passengers.map(passenger => 
+                            <p key={passenger.id}>{passenger.firstName + " " + passenger.lastName}</p>
                         )
                     }
 
                     {
-                        rideDetails.passengers.length == 0 &&
+                        rideDetails?.passengers.length == 0 &&
                         <p>No passengers will be on this ride!</p>
                     }
                 </div>
