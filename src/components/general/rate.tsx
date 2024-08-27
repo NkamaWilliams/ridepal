@@ -11,7 +11,7 @@ export default function Rate({handleClick}:props){
     const stars = [1, 2, 3, 4, 5]
     const [currentStar, setStar] = useState<number>(0)
     return(
-        <main className={styles.main}>
+        <main className={styles.rate}>
             <div>
                 <h1>Rate your Experience!</h1>
 
@@ -22,7 +22,7 @@ export default function Rate({handleClick}:props){
                         className={`${currentStar>=star && styles.selected}`}
                         onClick={() => {setStar(star)}} >⭐</p>
                     )}
-                {/* 🌟 */}
+                {/* 🌟🌟⭐ */}
                 </div>
 
                 <Button design={2} text="Confirm" functionality={handleClick}/>

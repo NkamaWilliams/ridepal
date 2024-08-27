@@ -16,6 +16,8 @@ interface alert{
     message: string,
 }
 
+const PHONE_NUMBER_PATTERN = /^0[0-9]{10}$/;
+
 export default function Home() {
     const route = useRouter();
     const [alert, setAlert] = useState<alert>({type: 1, message: "Please wait for verification mail before attempting to login!"})
@@ -28,6 +30,25 @@ export default function Home() {
         setLoading(true)
         try{
             const data = new FormData(e.currentTarget);
+            let password = data.get("password")
+            let confirmPassword = data.get("cpassword")
+            let phoneNumber = data.get("phoneNumber") as string
+            
+            if(!PHONE_NUMBER_PATTERN.test(phoneNumber)){
+                setAlert({type:2, message: "Invalid Phone Number! Must match format 0xxxxxxxxxx e.g. 07012934999"})
+                setHideAlert(false)
+                setTimeout(() => {setHideAlert(true)}, 4500)
+                return
+            }
+
+            if (password != confirmPassword){
+                setAlert({type:2, message: "Ensure password and confirm password are the same!"})
+                setHideAlert(false)
+                setTimeout(() => {setHideAlert(true)}, 3500)
+                return
+            }
+
+            data.delete("cpassword")
             const requestOptions = {
                 method: 'POST',
                 body: data,
@@ -79,7 +100,17 @@ export default function Home() {
             </div>
 
             <div className={styles2.member}>
+                <TextInput label="Phone Number" type="text" name="phoneNumber"/>
+            </div>
+        </div>
+
+        <div className={styles2.group}>
+            <div className={styles2.member}>
                 <TextInput label="Password" type="password" name="password"/>
+            </div>
+
+            <div className={styles2.member}>
+                <TextInput label="Confirm Password" type="password" name="cpassword"/>
             </div>
         </div>
 

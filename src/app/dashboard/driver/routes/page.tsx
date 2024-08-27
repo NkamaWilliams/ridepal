@@ -1,9 +1,9 @@
 'use client'
 import styles from "@/styles/dashboard.module.css"
-import Rate from "@/components/general/rate"
 import Button from "@/components/general/button"
 import Alert from "@/components/general/alert"
 import Loading from "@/components/general/loading"
+import Rate from "@/components/general/rate"
 import { FormEvent, useState, useEffect } from "react"
 import endpoint from "@/resources/api-endpoint.json"
 
@@ -44,8 +44,8 @@ export default function Route(){
     const closeRate = () => {
         setViewRate(false)
     }
-    const start = async () => {
-        const api = endpoint + "driver/start-ride/"
+    const startEnd = async (end:string) => {
+        const api = endpoint + `driver/${end}/`
         const token = sessionStorage.getItem("token")
         let altType: 1|2 = 1
         const raw2 = {
@@ -116,9 +116,10 @@ export default function Route(){
     }, [])
     return(
         <main className={styles.main}>
-        {loading && <Loading />}
-        <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
+            {loading && <Loading />}
+            <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
             {/* {viewRate && <Rate handleClick={closeRate}/>} */}
+
             <h1>Active Routes</h1>
 
             {rideDetails != null && 
@@ -143,12 +144,12 @@ export default function Route(){
                 </div>
 
                 {rideDetails?.status == "ongoing" &&<div>
-                    <Button text="Cancel Ride" design={2}/>
-                    <Button text="Route Completed"/>
+                    {/* <Button text="Cancel Ride" design={2}/> */}
+                    <Button functionality={() => {startEnd("end-ride")}} text="Route Completed"/>
                 </div>}
 
                 {rideDetails?.status == "pending" &&<div>
-                    <Button functionality={() => {start()}} text="Start Ride"/>
+                    <Button functionality={() => {startEnd("start-ride")}} text="Start Ride"/>
                 </div>}
             </div>
             }
