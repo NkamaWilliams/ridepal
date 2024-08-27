@@ -7,6 +7,7 @@ import Icon from "@/components/general/icon"
 import Button from "@/components/general/button"
 import Alert from "@/components/general/alert"
 import { SetStateAction, useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import endpoint from "@/resources/api-endpoint.json"
 import Loading from "@/components/general/loading"
 
@@ -23,6 +24,7 @@ interface alert{
 
 export default function Driver(){
     const context = useAppContext()
+    const route = useRouter()
     const [isLoading, setLoading] = useState<boolean>(false)
     const [routes, setRoutes] = useState<string[]>([])
     const [stops, setStops] = useState<boolean>(false)
@@ -96,7 +98,7 @@ export default function Driver(){
                 <TextSelect name="startPoint" label="TakeOff" type="search" />
                 <TextSelect name="destination" label="Destination" type="search" />
                 <TextSelect name="seatAvailable" pattern="\d+" label="Seats Available" type="text"/>
-                <TextSelect name="instruction" label="Instructions" type="area" />
+                <TextSelect required={true} name="instruction" label="Instructions" type="area" />
                 {stops && <Stops func={setRoutes} close={closeStops} routes={routes}/>}
                 <Button functionality={openStops} text="Add Stops" type="button" design={2}/>
                 <Button text="Publish" />

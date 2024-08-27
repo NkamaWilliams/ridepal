@@ -4,8 +4,9 @@ import Button from "@/components/general/button"
 import Alert from "@/components/general/alert"
 import Loading from "@/components/general/loading"
 import Rate from "@/components/general/rate"
-import { FormEvent, useState, useEffect } from "react"
 import endpoint from "@/resources/api-endpoint.json"
+import { useRouter } from "next/navigation"
+import { FormEvent, useState, useEffect } from "react"
 
 interface rideInfo {
     startTime: string,
@@ -38,6 +39,7 @@ export default function Route(){
     const [hideAlert, setHideAlert] = useState<boolean>(true)
     const [loading, setLoading] = useState<boolean>(false)
     const [alert, setAlert] = useState<alertInter>({type: 1, message: ""})
+    const [refresh, setRefresh] = useState<boolean>(false)
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault()
     }
@@ -76,10 +78,15 @@ export default function Route(){
             }
             setAlert({type: altType, message: data.message})
             setHideAlert(false)
+            if (end == "end-ride"){
+                setViewRate(true)
+                setRideDetails(null)
+            }
         } catch(e){
             console.error(e)
         } finally{
             setTimeout(() => {setHideAlert(true)}, 3500)
+            setRefresh(!refresh)
         }
     }
 
@@ -113,12 +120,12 @@ export default function Route(){
         onLoad("driver/pending-ride/")
         onLoad("driver/ongoing-ride/")
         setTimeout(() => {setLoading(false)}, 3000)
-    }, [])
+    }, [refresh])
     return(
         <main className={styles.main}>
             {loading && <Loading />}
             <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
-            {/* {viewRate && <Rate handleClick={closeRate}/>} */}
+            <Rate handleClick={closeRate} view={viewRate} rideId={rideDetails?.rideId??""} passengerId={rideDetails?.passengers.map(passenger => passenger.id)}/>
 
             <h1>Active Routes</h1>
 
@@ -133,7 +140,7 @@ export default function Route(){
                     <p><b>Passengers</b></p>
                     {
                         rideDetails?.passengers.map(passenger => 
-                            <p key={passenger.id}>{passenger.firstName + " " + passenger.lastName}</p>
+                            <p key={passenger.id}>{passenger.firstName + " " + passenger.lastName} <span>{passenger.phoneNumber}</span></p>
                         )
                     }
 

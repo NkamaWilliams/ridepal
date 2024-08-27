@@ -42,3 +42,7 @@
 .stars .selected{
     opacity: 1;
 }
+
+.hide{
+    display: none;
+}
