@@ -98,7 +98,7 @@ export default function Route(){
             </div>
             }
 
-            {rideDetails == null && <p>No active route!</p>}
+            {rideDetails == null && <p>No active ride!</p>}
 
             <h1>Previous Ride</h1>
 
@@ -128,7 +128,7 @@ export default function Route(){
             </div>
             }
 
-            {rideDetails2 == null && <p>No active route!</p>}
+            {rideDetails2 == null && <p>No previus unrated ride!</p>}
         </main>
     )
 }
