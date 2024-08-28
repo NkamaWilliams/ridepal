@@ -128,7 +128,7 @@ export default function Route(){
             </div>
             }
 
-            {rideDetails2 == null && <p>No previus unrated ride!</p>}
+            {rideDetails2 == null && <p>No previous unrated ride!</p>}
         </main>
     )
 }
