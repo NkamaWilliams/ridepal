@@ -87,6 +87,10 @@ export default function Navbar(){
                         <p>Book ride</p>
                         <div className={styles.highlight}></div>
                     </Link>
+                    <Link onClick={closeSidenav} className={styles.sidelink} href="/dashboard/rider/routes">
+                        <p>View rides</p>
+                        <div className={styles.highlight}></div>
+                    </Link>
                     </>}
                 </section>
 

@@ -5,8 +5,7 @@ import Alert from "@/components/general/alert"
 import Loading from "@/components/general/loading"
 import Rate from "@/components/general/rate"
 import endpoint from "@/resources/api-endpoint.json"
-import { useRouter } from "next/navigation"
-import { FormEvent, useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 interface rideInfo {
     startTime: string,
