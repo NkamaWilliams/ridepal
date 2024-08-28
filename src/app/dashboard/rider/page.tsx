@@ -225,7 +225,7 @@ function Selection({name, car, plates, details, seats, id, driverId}: SelectionP
                 <div>
                     <p><b>Departure Time: </b> 12:00pm</p>
                     <p><b>Seats Available:</b> {seats}</p>
-                    <p><b>Ratings:</b> {ratings} / 5</p>
+                    <p><b>Ratings:</b> {ratings.toFixed(1)} / 5</p>
                 </div>
 
                 <div className={styles.btn}>
