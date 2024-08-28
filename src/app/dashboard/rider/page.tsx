@@ -7,6 +7,7 @@ import Icon from "@/components/general/icon"
 import Loading from "@/components/general/loading"
 import Alert from "@/components/general/alert"
 import React, { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import endpoint from "@/resources/api-endpoint.json"
 
 interface SelectionProp{
@@ -129,6 +130,7 @@ function Selection({name, car, plates, details, seats, id, driverId}: SelectionP
     const [type, setType] = useState<1|2>(1)
     const [message, setMessage] = useState<string>("")
     const [ratings, setRatings] = useState<number>(0)
+    const route = useRouter()
     
     const getRating = async () => {
         const api = `${endpoint}rating/ratings/${driverId}`;
@@ -177,6 +179,10 @@ function Selection({name, car, plates, details, seats, id, driverId}: SelectionP
             else if (response.status == 403){
                 setType(2)
                 setMessage("You have already booked a ride!")
+                setTimeout(() => {
+                    setAlert(true)
+                    route.push("/dashboard/rider/routes")
+                }, 3500)
             }
             
             else{

@@ -57,6 +57,10 @@ export default function Driver(){
             if (response.ok){
                 console.log("SUCCESS PEOPLE!");
                 setAlert({type:1, message:"Route created successfully!"})
+                setTimeout(() => {
+                    setHideAlert(true)
+                    route.push("/dashboard/driver/routes")
+                }, 3500)
             }
             else{
                 const result = JSON.parse(await response.text())
