@@ -40,12 +40,11 @@ export default function Route(){
     const [loading, setLoading] = useState<boolean>(false)
     const [alert, setAlert] = useState<alertInter>({type: 1, message: ""})
     const [refresh, setRefresh] = useState<boolean>(false)
-    const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-    }
+    const [passenger, setPassenger] = useState<passenger[]|null>(null)
     const closeRate = () => {
         setViewRate(false)
     }
+
     const startEnd = async (end:string) => {
         const api = endpoint + `driver/${end}/`
         const token = sessionStorage.getItem("token")
@@ -65,28 +64,31 @@ export default function Route(){
             };
             const response = await fetch(api, req);
             const data = await response.json();
-            if (response.ok){
+            if (response.ok && end=="start-ride"){
                 setRideDetails({
                     startTime: data.ride.startTime,
-                    passengers: data.ride.passengers,
+                    passengers: rideDetails?.passengers ?? [],
                     status: data.ride.status,
                     rideId: data.ride.id 
                 })
+                setPassenger(rideDetails?.passengers??[])
             }
-            else{
+            else if (!response.ok){
                 altType = 2
             }
             setAlert({type: altType, message: data.message})
             setHideAlert(false)
-            if (end == "end-ride"){
-                setViewRate(true)
-                setRideDetails(null)
-            }
         } catch(e){
             console.error(e)
         } finally{
             setTimeout(() => {setHideAlert(true)}, 3500)
-            setRefresh(!refresh)
+        }
+    }
+
+    const end = async () => {
+        await startEnd("end-ride")
+        if (passenger && passenger.length > 0){
+            setViewRate(false)
         }
     }
 
@@ -125,7 +127,7 @@ export default function Route(){
         <main className={styles.main}>
             {loading && <Loading />}
             <Alert type={alert.type} message={alert.message} hide={hideAlert}/>
-            <Rate handleClick={closeRate} view={viewRate} rideId={rideDetails?.rideId??""} passengerId={rideDetails?.passengers.map(passenger => passenger.id)}/>
+            <Rate handleClick={setViewRate} view={viewRate} rideId={rideDetails?.rideId??""} passengerId={passenger?.map(passengers => passengers.id)}/>
 
             <h1>Active Routes</h1>
 
@@ -152,7 +154,7 @@ export default function Route(){
 
                 {rideDetails?.status == "ongoing" &&<div>
                     {/* <Button text="Cancel Ride" design={2}/> */}
-                    <Button functionality={() => {startEnd("end-ride")}} text="Route Completed"/>
+                    <Button functionality={() => {end()}} text="Route Completed"/>
                 </div>}
 
                 {rideDetails?.status == "pending" &&<div>

@@ -43,7 +43,9 @@ export default function TextSelect({label, type="text", name, pattern, required 
                     setValue(e.currentTarget.value)
                 }}
                 title={label}
-                name={name}></textarea>}
+                name={name}
+                required
+                ></textarea>}
             </div>
 
             <div className={`${styles.dropdownContent} ${hidden && styles.hide}`}>

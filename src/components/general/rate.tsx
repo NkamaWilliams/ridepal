@@ -3,10 +3,11 @@ import styles from "@/styles/general/rate.module.css"
 import Button from "./button"
 import endpoint from "@/resources/api-endpoint.json"
 import Loading from "./loading"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 interface props{
-    handleClick?: () => void,
+    handleClick: React.Dispatch<React.SetStateAction<boolean>>,
     rideId: string,
     passengerId?: string[],
     view: boolean
@@ -14,9 +15,12 @@ interface props{
 
 export default function Rate({handleClick, rideId, passengerId, view}:props){
     const stars = [1, 2, 3, 4, 5]
+    const route = useRouter()
     const [currentStar, setStar] = useState<number>(0)
     const [loading, setLoading] = useState<boolean>(false)
     const handleSubmit = () => {
+        console.log("Passengers:")
+        console.log(passengerId)
         setLoading(true)
         if (passengerId){
             passengerId.forEach(passenger => 
@@ -26,6 +30,8 @@ export default function Rate({handleClick, rideId, passengerId, view}:props){
         else{
             rateDriver()
         }
+        handleClick(true)
+        route.push(".")
     }
 
     const ratePassenger = async (id:string) => {
@@ -61,7 +67,7 @@ export default function Rate({handleClick, rideId, passengerId, view}:props){
     }
 
     const rateDriver = async () => {
-        const api = endpoint + `rating/rate-passenger/`
+        const api = endpoint + `rating/rate-driver/`
         const token = sessionStorage.getItem("token")
         const raw = {
             rideId: rideId,
@@ -92,10 +98,11 @@ export default function Rate({handleClick, rideId, passengerId, view}:props){
     }
 
     return(
+        <>
+        {loading && <Loading />}
         <main className={`${styles.rate} ${view && styles.hide}`}>
-            {loading && <Loading />}
             <div>
-                <h1>Rate your Experience!</h1>
+                <h1>Rate your {passengerId != undefined && passengerId.length > 0 ? "Passengers":"Driver"}!</h1>
 
                 <div className={styles.stars}>
                     {stars.map(star => 
@@ -104,16 +111,13 @@ export default function Rate({handleClick, rideId, passengerId, view}:props){
                         className={`${currentStar>=star && styles.selected}`}
                         onClick={() => {setStar(star)}} >⭐</p>
                     )}
-                {/* 🌟🌟⭐ */}
                 </div>
 
                 <Button design={2} text="Confirm" functionality={() => {
                     handleSubmit()
-                    if (handleClick){
-                        handleClick()
-                    }
                 }}/>
             </div>
         </main>
+        </>
     )
 }
