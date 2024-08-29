@@ -25,3 +25,15 @@
 .btn2:hover{
     color: white;
 }
+
+.btn:disabled{
+    opacity: 0.5;
+}
+
+.btn:disabled:hover{
+    background-color: var(--btn-bg-1);
+}
+
+.btn2:disabled:hover{
+    background-color: white;
+}

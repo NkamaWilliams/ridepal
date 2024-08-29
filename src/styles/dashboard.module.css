@@ -194,6 +194,17 @@
     margin: 10px auto;
 }
 
+.navigate{
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    margin: 0;
+}
+
+.navigate div{
+    flex: 1;
+}
+
 .close{
     margin-left: calc(100% - 50px);
     padding: 0 20px;
@@ -214,5 +225,9 @@
 
     .details p{
         max-width: 90%;
+    }
+
+    .navigate{
+        gap: 30px;
     }
 }

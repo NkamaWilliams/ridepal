@@ -15,6 +15,21 @@ interface rideInfo {
     instructions: string
 }
 
+interface prevRides{
+    createdAt: string,
+    driverId: string,
+    endTime: string,
+    id: string,
+    instruction: string,
+    passengers: string[],
+    routeId: string,
+    seatAvailable: number,
+    startTime: string,
+    status: "ongoing" | "pending" | "completed",
+    updatedAt: string,
+    vehicleId: string
+}
+
 interface alertInter{
     type: 1|2,
     message: string,
@@ -24,6 +39,8 @@ export default function Route(){
     const [viewRate, setViewRate] = useState<boolean>(true)
     const [rideDetails, setRideDetails] = useState<rideInfo|null>(null)
     const [rideDetails2, setRideDetails2] = useState<rideInfo|null>(null)
+    const [prevRides, setPrevRides] = useState<prevRides[]>([])
+    const [index, setIndex] = useState<number>(0)
 
     const [hideAlert, setHideAlert] = useState<boolean>(true)
     const [loading, setLoading] = useState<boolean>(false)
@@ -43,13 +60,17 @@ export default function Route(){
             if (response.ok){
                 const data = await response.json();
                 if (routeEnd == "passenger/last-joined-completed-ride/"){
+                    setPrevRides(data.ride)
+                    const recent = data.ride[data.ride.length - 1]
+                    setIndex(data.ride.length - 1)
                     setRideDetails2({
-                        startTime: new Date(data.ride.startTime).toLocaleString([], {hour: "2-digit", minute: "2-digit", hour12: true}),
-                        endTime: new Date(data.ride.endTime).toLocaleString([], {hour: "2-digit", minute: "2-digit", hour12: true}),
-                        instructions: data.ride.instruction,
-                        status: data.ride.status ,
-                        rideId: data.ride.id
+                        startTime: new Date(recent.startTime).toLocaleString([], {hour: "2-digit", minute: "2-digit", hour12: true}),
+                        endTime: new Date(recent.endTime).toLocaleString([], {hour: "2-digit", minute: "2-digit", hour12: true}),
+                        instructions: recent.instruction,
+                        status: recent.status ,
+                        rideId: recent.id
                     })
+                    console.log(recent)
                 }
                 else{
                     setRideDetails({
@@ -63,6 +84,17 @@ export default function Route(){
         } catch(e){
             console.error(e)
         }
+    }
+
+    const handleNav = (num: number) => {
+        setIndex(num + index)
+        setRideDetails2({
+            startTime: new Date(prevRides[num+index].startTime).toLocaleString([], {hour: "2-digit", minute: "2-digit", hour12: true}),
+            endTime: new Date(prevRides[num+index].endTime).toLocaleString([], {hour: "2-digit", minute: "2-digit", hour12: true}),
+            instructions: prevRides[num+index].instruction,
+            status: prevRides[num+index].status ,
+            rideId: prevRides[num+index].id
+        })
     }
     
     useEffect(() => {
@@ -100,7 +132,7 @@ export default function Route(){
 
             {rideDetails == null && <p>No active ride!</p>}
 
-            <h1>Previous Ride</h1>
+            <h1>Previous Rides</h1>
 
             {rideDetails2 != null && 
             <div className={styles.route}>
@@ -124,7 +156,12 @@ export default function Route(){
                     <p>Completed</p>
                 </div>
 
-                <Button type="button" design={2} text="Rate Previous Ride" functionality={() => {setViewRate(false)}}/>
+                <Button type="button" design={2} text="Rate Ride" functionality={() => {setViewRate(false)}}/>
+
+                <div className={styles.navigate}>
+                    <div><Button disabled={index == 0} type="button" design={1} text="Previous" functionality={() => {handleNav(-1)}}/></div>
+                    <div><Button disabled={index == prevRides.length-1} type="button" design={1} text="Next" functionality={() => {handleNav(1)}}/></div>
+                </div>
             </div>
             }
 
