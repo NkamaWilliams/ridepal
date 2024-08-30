@@ -6,91 +6,129 @@ import { useAppContext } from "@/components/general/appcontext";
 import Link from "next/link";
 import Alert from "@/components/general/alert";
 import { useRouter } from "next/navigation";
-import endpoint from "@/resources/api-endpoint.json"
+import endpoint from "@/resources/api-endpoint.json";
 import styles from "@/styles/page.module.css";
-import { FormEvent, use } from "react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+
+interface UserData {
+  id: string;
+  email: string;
+  firstName?: string;
+  username?: string;
+  type?: string;
+}
+
+interface vehicle{
+  id: string, 
+  color: string, 
+  model: string, 
+  plateNumber: string, 
+  seatNumber: number 
+}
+// vechile?: { id: string, color: string, model: string, plateNumber: string, seatNumber: number };
+
+interface ApiResponse {
+  code?: number;
+  message: string;
+  data: {
+    user: UserData;
+    accessToken: string;
+    vechile: vehicle;
+  };
+}
 
 export default function Home() {
-  const context = useAppContext()
-  const [loading, setLoading] = useState<boolean>(false)
-  const [hideAlert, setAlert] = useState<boolean>(true)
-  const [message, setMessage] = useState<string>("")
-  const [type, setType] = useState<1|2>(2)
-  const route = useRouter()
+  const context = useAppContext();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hideAlert, setAlert] = useState<boolean>(true);
+  const [message, setMessage] = useState<string>("");
+  const [type, setType] = useState<1 | 2>(2);
+  const router = useRouter();
 
-  const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    const entries = Object.fromEntries(new FormData(e.currentTarget).entries())
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
     const raw = {
-      "email": entries["email"].toString(),
-      "password": entries["password"].toString(),
-    }
-    try{
-      var requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(raw),
-      }
+      email: formData.get("email")?.toString() || "",
+      password: formData.get("password")?.toString() || "",
+    };
 
-      const response = await fetch(`${endpoint[0]}auth/signin`, requestOptions)
-      if (response.ok){
-        const result = await response.json()
-        setMessage(result.message)
-        const data = result.data
-        context.setContext(data.user.id, data.user.email, data.user.firstName, data.accessToken)
-        let name = data.user.firstName?? data.user.username
-        console.log("Context Set!")
-        sessionStorage.setItem("id", data.user.id);
-        sessionStorage.setItem("username", name);
-        sessionStorage.setItem("token", data.accessToken);
-        sessionStorage.setItem("type", data.user.type??"rider");
-        if (data.user.type == "driver"){
-          sessionStorage.setItem("v-id", data.vechile.id)
+    try {
+      const response = await fetch(`${endpoint[0]}auth/signin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(raw),
+      });
+
+      if (response.ok) {
+        const result: ApiResponse = await response.json();
+        if (result.code == 400 || result.code == 401){
+          setMessage(result.message)
         }
+        const { user, accessToken, vechile } = result.data;
+        const name = user.firstName ?? user.username ?? "User";
+        
+        context.setContext(user.id, user.email, name, accessToken);
+        setSessionData(user, accessToken, vechile);
+        
+        router.push(user.type === "driver" ? "/dashboard/driver" : "/dashboard/rider");
+      } else {
+        const error = await response.json();
+        setMessage(error.message);
       }
-      if (!response.ok){
-        console.log("I'm not OK!")
-        const text = JSON.parse(await response.text())
-        setMessage(text.message)
-      }
-    } catch(err){
-      console.log(err)
-      sessionStorage.setItem("id", "");
-      sessionStorage.setItem("username", "");
-      sessionStorage.setItem("token", "");
-    } finally{
-      setLoading(false)
-      if (sessionStorage.getItem("id") && sessionStorage.getItem("id") != ""){
-        if (sessionStorage.getItem("type") == "driver"){
-          route.push("/dashboard/driver")
-        }
-        else{
-          route.push("/dashboard/rider")
-        }
-      }
-      else{
-        setAlert(false)
-        setTimeout(() => {setAlert(true)}, 3000)
-      }
+    } catch (err) {
+      console.error("Error during login:", err);
+      clearSessionData();
+    } finally {
+      setLoading(false);
+      handleAlert();
     }
-  }
+  };
+
+  const setSessionData = (user: UserData, accessToken: string, vechile:vehicle) => {
+    console.log("USer")
+    console.log(user)
+    sessionStorage.setItem("id", user.id);
+    sessionStorage.setItem("username", user.firstName ?? user.username ?? "User");
+    sessionStorage.setItem("token", accessToken);
+    sessionStorage.setItem("type", user.type ?? "rider");
+    if (user.type === "driver" && vechile) {
+      console.log("There is a vehicle")
+      sessionStorage.setItem("v-id", vechile.id);
+    }
+  };
+
+  const clearSessionData = () => {
+    sessionStorage.clear();
+  };
+
+  const handleAlert = () => {
+    if (!sessionStorage.getItem("id")) {
+      setAlert(false);
+      setTimeout(() => setAlert(true), 3000);
+    }
+  };
 
   return (
     <main className={styles.main}>
       {loading && <Loading />}
-      <Alert type={type} message={message} hide={hideAlert}/>
+      <Alert type={type} message={message} hide={hideAlert} />
       <form onSubmit={handleSubmit} className={styles.form} method="post">
         <h1>Login</h1>
-        <TextInput label="Email" type="email" name="email"/>
-        <TextInput label="Password" type="password" name="password"/>
-        <Button text="Login"/>
+        <TextInput label="Email" type="email" name="email" />
+        <TextInput label="Password" type="password" name="password" />
+        <Button text="Login" />
 
-        <br/>
-        <p>Don&apos;t have an account yet? Click <Link className={styles.link} href="/signup">here</Link> to sign up</p>
+        <br />
+        <p>
+          Don&apos;t have an account yet? Click{" "}
+          <Link className={styles.link} href="/signup">
+            here
+          </Link>{" "}
+          to sign up
+        </p>
       </form>
     </main>
   );

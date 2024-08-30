@@ -40,11 +40,8 @@ export default function Route(){
     const [alert, setAlert] = useState<alertInter>({type: 1, message: ""})
     const [refresh, setRefresh] = useState<boolean>(false)
     const [passenger, setPassenger] = useState<passenger[]|null>(null)
-    const closeRate = () => {
-        setViewRate(false)
-    }
 
-    const startEnd = async (end:string) => {
+    const manageRide = async (end:string) => {
         const api = endpoint + `driver/${end}/`
         const token = sessionStorage.getItem("token")
         let altType: 1|2 = 1
@@ -84,14 +81,14 @@ export default function Route(){
         }
     }
 
-    const end = async () => {
-        await startEnd("end-ride")
+    const endRide = async () => {
+        await manageRide("end-ride")
         if (passenger && passenger.length > 0){
             setViewRate(false)
         }
     }
 
-    const onLoad = async (routeEnd: string) => {
+    const Load = async (routeEnd: string) => {
         const api = endpoint + routeEnd
         const token = sessionStorage.getItem("token")
         try{
@@ -118,8 +115,8 @@ export default function Route(){
     
     useEffect(() => {
         setLoading(true)
-        onLoad("driver/pending-ride/")
-        onLoad("driver/ongoing-ride/")
+        Load("driver/pending-ride/")
+        Load("driver/ongoing-ride/")
         setTimeout(() => {setLoading(false)}, 3000)
     }, [refresh])
     return(
@@ -152,12 +149,11 @@ export default function Route(){
                 </div>
 
                 {rideDetails?.status == "ongoing" &&<div>
-                    {/* <Button text="Cancel Ride" design={2}/> */}
-                    <Button functionality={() => {end()}} text="Route Completed"/>
+                    <Button functionality={() => {endRide()}} text="Route Completed"/>
                 </div>}
 
                 {rideDetails?.status == "pending" &&<div>
-                    <Button functionality={() => {startEnd("start-ride")}} text="Start Ride"/>
+                    <Button functionality={() => {manageRide("start-ride")}} text="Start Ride"/>
                 </div>}
             </div>
             }

@@ -53,7 +53,7 @@ interface routeInfo{
     publishedAt: string,
 }
 
-export default function Driver(){
+export default function Rider(){
     const context = useAppContext()
     const [viewResults, setViewResults] = useState(false)
     const [routes, setRoutes] = useState<routeInfo[]>([])
@@ -112,7 +112,7 @@ export default function Driver(){
 
             <div className={styles.group}>
                 {routes.map(details => 
-                    <Selection key={details.ride.vehicle.plateNumber} name={details.driver.firstName} car={details.ride.vehicle.model} plates={details.ride.vehicle.plateNumber} details={details.ride.instruction} seats={details.ride.seatAvailable} id={details.id} driverId={details.driver.driverId}/>
+                    <RideSelection key={details.ride.vehicle.plateNumber} name={details.driver.firstName} car={details.ride.vehicle.model} plates={details.ride.vehicle.plateNumber} details={details.ride.instruction} seats={details.ride.seatAvailable} id={details.id} driverId={details.driver.driverId}/>
                 )}
                 {routes.length < 1 && 
                     <p>No routes found!</p>
@@ -123,7 +123,7 @@ export default function Driver(){
     )
 }
 
-function Selection({name, car, plates, details, seats, id, driverId}: SelectionProp){
+function RideSelection({name, car, plates, details, seats, id, driverId}: SelectionProp){
     const [viewPopup, setViewPopup] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [hideAlert, setAlert] = useState<boolean>(true)
